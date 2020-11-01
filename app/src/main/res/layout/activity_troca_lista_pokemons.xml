@@ -46,6 +46,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/barraVoltarTroca"
         android:gravity="center">
+
+
+
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,11 +75,41 @@
             android:layout_height="wrap_content"
             android:text="Recebendo"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/botoesTroca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pokemon_selecionados"
+        android:gravity="center">
+        <Button
+            android:id="@+id/botaoAlterar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alterar Oferta"/>
+        <Button
+            android:id="@+id/botaoAceitar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aceitar"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/botaoAlterar"/>
+        <Button
+            android:id="@+id/botaoRejeitar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rejeitar"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/botaoAceitar"/>
 
     </LinearLayout>
+
+
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listaTrocaPokemons"
-        android:layout_below="@+id/pokemon_selecionados" />
+        android:layout_below="@id/botoesTroca" />
 </RelativeLayout>
