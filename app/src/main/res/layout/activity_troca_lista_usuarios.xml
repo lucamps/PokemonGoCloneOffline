@@ -40,6 +40,100 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/listaUsuariosTroca"
+        android:layout_below="@id/barraVoltarTroca">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/listaUsuariosTroca1">
+
+            <ImageView
+                android:id="@+id/Usuario1Imagem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_margin="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/female_profile"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pessoa1"
+                android:textStyle="normal"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/Usuario1Nome"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/Usuario1Imagem" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TROCAR"
+                android:textStyle="normal"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:id="@+id/Usuario1Trocar"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/listaUsuariosTroca2"
+            android:layout_below="@id/listaUsuariosTroca1">
+
+            <ImageView
+                android:id="@+id/Usuario2Imagem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_margin="10dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/male_profile"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pessoa2"
+                android:textStyle="normal"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/Usuario2Nome"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/Usuario2Imagem" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TROCAR"
+                android:textStyle="normal"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                android:id="@+id/Usuario2Trocar"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
