@@ -16,6 +16,7 @@ import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.Model.Pokemon;
 import teste.lucasvegi.pokemongooffline.R;
 import teste.lucasvegi.pokemongooffline.View.AdapterPokedex;
+import teste.lucasvegi.pokemongooffline.View.AdapterTrocaPokemonsList;
 
 public class TrocaListaPokemonActivity extends Activity implements AdapterView.OnItemClickListener{
 
@@ -35,7 +36,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             pokemons = ControladoraFachadaSingleton.getInstance().getPokemons();
             ListView listView = (ListView) findViewById(R.id.listaTrocaPokemons);
 
-            AdapterPokedex adapterPokedex = new AdapterPokedex(pokemons, this);
+            AdapterTrocaPokemonsList adapterPokedex = new AdapterTrocaPokemonsList(pokemons, this);
             listView.setAdapter(adapterPokedex);
             listView.setOnItemClickListener(this);
 

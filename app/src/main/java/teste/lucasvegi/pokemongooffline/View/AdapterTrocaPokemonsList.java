@@ -54,7 +54,7 @@ public class AdapterTrocaPokemonsList extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
             View view = act.getLayoutInflater().inflate(R.layout.lista_pokedex_personalizada, parent, false);
-
+            View view2 = act.getLayoutInflater().inflate(R.layout.lista_pokedex_personalizada_null, parent, false);
             Pokemon pkmn = pokemons.get(position);
 
             Log.i("POKEDEX", "Montando lista pokedex para " + pkmn.getNome());
@@ -80,17 +80,7 @@ public class AdapterTrocaPokemonsList extends BaseAdapter {
 
                 imagem.setImageResource(pkmn.getIcone());
             }else {
-                nomePokemon.setText("???");
-
-                //ajusta o visual do número acrescendo zeros ao lado
-                if(pkmn.getNumero() < 10)
-                    numeroPokemon.setText("#00"+pkmn.getNumero());
-                else if(pkmn.getNumero() < 100)
-                    numeroPokemon.setText("#0"+pkmn.getNumero());
-                else
-                    numeroPokemon.setText("#"+pkmn.getNumero());
-
-                imagem.setImageResource(R.drawable.help);
+                return view2;
             }
 
             return view;
