@@ -91,6 +91,10 @@
             android:name="teste.lucasvegi.pokemongooffline.Controller.MapCapturasActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.TrocaListaUsuariosActivity"
+            android:screenOrientation="portrait">
+        </activity>
 
         <!-- CHAVE API KEY -->
         <meta-data

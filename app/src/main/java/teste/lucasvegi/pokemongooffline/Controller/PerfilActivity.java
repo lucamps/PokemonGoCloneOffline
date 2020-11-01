@@ -3,6 +3,7 @@ package teste.lucasvegi.pokemongooffline.Controller;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,8 @@ import teste.lucasvegi.pokemongooffline.Model.PokemonCapturado;
 import teste.lucasvegi.pokemongooffline.R;
 
 public class PerfilActivity extends Activity {
+
+    public final static int PERFIL_TROCA = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,15 @@ public class PerfilActivity extends Activity {
 
         }catch (Exception e){
             Log.e("PERFIL", "ERRO: " + e.getMessage());
+        }
+    }
+
+    public void clickTroca(View v) {
+        try {
+            Intent it = new Intent(this, TrocaListaUsuariosActivity.class);
+            startActivityForResult(it,PERFIL_TROCA);
+        } catch (Exception e){
+            Log.e("TROCA", "ERRO: " + e.getMessage());
         }
     }
 
