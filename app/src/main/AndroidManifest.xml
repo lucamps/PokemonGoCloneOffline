@@ -54,6 +54,14 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
+
+
+        <activity
+            android:name="teste.lucasvegi.pokemongooffline.Controller.TrocaListaPokemonActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+        </activity>
+
         <activity
             android:name="teste.lucasvegi.pokemongooffline.Controller.MapActivity"
             android:screenOrientation="portrait" >
