@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,15 +53,8 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             //Click em um item da listView customizada
             Pokemon pkmn = (Pokemon) parent.getAdapter().getItem(position);
 
-            //verifica se pokemon selecionado já foi capturado pelo menos  uma vez
-            if (ControladoraFachadaSingleton.getInstance().getUsuario().getQuantidadeCapturas(pkmn) > 0) {
-
-                //Toast.makeText(this, "Detalhes do " + pkmn.getNome(), Toast.LENGTH_SHORT).show();
-
-                Intent it = new Intent(this,DetalhesPokedexActivity.class);
-                it.putExtra("pkmn",pkmn);
-                startActivity(it);
-            }
+            ImageView pokemon_selecionado = (ImageView) findViewById(R.id.meu_pokemon_selecionado);
+            pokemon_selecionado.setImageResource(pkmn.getIcone());
 
         }catch (Exception e){
             Log.e("POKEDEX", "ERRO no click: " + e.getMessage());
