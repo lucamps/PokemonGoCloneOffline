@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@drawable/view_fundo_barra_navegacao"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -40,41 +40,10 @@
 
 
     </RelativeLayout>
-    <LinearLayout
-        android:id="@+id/pokemon_selecionados"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/barraVoltarTroca"
-        android:gravity="center">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enviando "/>
-        <ImageView
-            android:id="@+id/meu_pokemon_selecionado"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/i42"
-            />
-        <ImageView
-            android:id="@+id/outro_pokemon_selecionado"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/i25"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Recebendo"/>
 
-
-    </LinearLayout>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listaTroca"
-        android:layout_below="@+id/pokemon_selecionados" />
+        android:id="@+id/listaTrocaPokemons"
+        android:layout_below="@+id/barraVoltarTroca" />
 </RelativeLayout>

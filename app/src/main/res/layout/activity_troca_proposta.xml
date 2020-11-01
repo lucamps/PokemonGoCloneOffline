@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="teste.lucasvegi.pokemongooffline.Controller.TrocaListaPokemonActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/view_fundo_barra_navegacao"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/barraVoltarTroca">
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true"
+            android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_action_back"
+            android:background="@android:color/transparent"
+            android:id="@+id/voltarTroca"
+            android:onClick="clickVoltar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Proposta de troca de Pokémon"
+            android:textStyle="normal"
+            android:textColor="#FFFFFF"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/txtTituloTroca"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/voltarTroca" />
+
+
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/pokemon_selecionados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/barraVoltarTroca"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviando "/>
+        <ImageView
+            android:id="@+id/meu_pokemon_selecionado"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/i42"
+            />
+        <ImageView
+            android:id="@+id/outro_pokemon_selecionado"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/i25"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recebendo"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/botoesTroca"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pokemon_selecionados"
+        android:gravity="center">
+        <Button
+            android:id="@+id/botaoAlterar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alterar Oferta"/>
+        <Button
+            android:id="@+id/botaoAceitar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aceitar"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/botaoAlterar"/>
+        <Button
+            android:id="@+id/botaoRejeitar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rejeitar"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/botaoAceitar"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

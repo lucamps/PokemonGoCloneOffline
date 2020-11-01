@@ -28,6 +28,8 @@ public class TrocaListaUsuariosActivity extends Activity{
 
     public void exchange(View v) {
         try {
+//            Intent it = new Intent(this, TrocaListaPokemonActivity.class);
+//            startActivityForResult(it,PERFIL_TROCA);
             Intent it = new Intent(this, TrocaListaPokemonActivity.class);
             startActivityForResult(it,PERFIL_TROCA);
         } catch (Exception e){
