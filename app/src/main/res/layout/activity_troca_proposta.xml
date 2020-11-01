@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="teste.lucasvegi.pokemongooffline.Controller.TrocaListaPokemonActivity">
+    tools:context="teste.lucasvegi.pokemongooffline.Controller.TrocaPropostaActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -83,21 +83,24 @@
             android:id="@+id/botaoAlterar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Alterar Oferta"/>
+            android:text="Alterar Oferta"
+            android:onClick="alterarOfertaTroca"/>
         <Button
             android:id="@+id/botaoAceitar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Aceitar"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/botaoAlterar"/>
+            android:layout_toRightOf="@+id/botaoAlterar"
+            android:onClick="aceitarTroca"/>
         <Button
             android:id="@+id/botaoRejeitar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rejeitar"
             android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/botaoAceitar"/>
+            android:layout_toRightOf="@+id/botaoAceitar"
+            android:onClick="rejeitarTroca"/>
 
     </LinearLayout>
 
