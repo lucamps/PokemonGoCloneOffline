@@ -35,6 +35,10 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
+    <!-- Bluetooth permissions: used for exchanging pokemons -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <!-- Importante para recuperar o context de forma estática -->
     <application
         android:name="teste.lucasvegi.pokemongooffline.Util.MyApp"

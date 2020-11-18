@@ -2,6 +2,8 @@ package teste.lucasvegi.pokemongooffline.Controller;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,38 @@ import teste.lucasvegi.pokemongooffline.R;
 public class PerfilActivity extends Activity {
 
     public final static int PERFIL_TROCA = 1;
+
+    public static final int REQUEST_ENABLE_BT = 402;
+
+    // Verifica se o usuário habilitou o Bluetooth
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == REQUEST_ENABLE_BT) {
+                if(resultCode  == RESULT_OK) {
+                    Intent it = new Intent(this, TrocaListaUsuariosActivity.class);
+                    startActivityForResult(it,PERFIL_TROCA);
+                } else if (resultCode == RESULT_CANCELED){
+                    Context context = getApplicationContext();
+                    CharSequence text = "Seu Bluetooth está desligado. Ative-o para realizar troca de pokémons.";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+            }
+        } catch (Exception ex) {
+            Context context = getApplicationContext();
+            CharSequence text = "Exceção.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +95,28 @@ public class PerfilActivity extends Activity {
 
     public void clickTroca(View v) {
         try {
-            Intent it = new Intent(this, TrocaListaUsuariosActivity.class);
-            startActivityForResult(it,PERFIL_TROCA);
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter == null) {
+                Context context = getApplicationContext();
+                CharSequence text = "Seu dispositivo não suporta Bluetooth: a troca de pokémons esta'desabilitada para você.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+                return;
+            }
+            else if (!bluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+
+                onActivityResult(REQUEST_ENABLE_BT, 8989, enableBtIntent);
+            }
+            else  {
+                Intent it = new Intent(this, TrocaListaUsuariosActivity.class);
+                startActivityForResult(it,PERFIL_TROCA);
+            }
+
         } catch (Exception e){
             Log.e("TROCA", "ERRO: " + e.getMessage());
         }
