@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ public class PerfilActivity extends Activity {
     public final static int PERFIL_TROCA = 1;
     public static final int REQUEST_ENABLE_BT = 402;
 
+    private Button troca;
+
     // Verifica se o usuário habilitou o Bluetooth
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -36,7 +39,9 @@ public class PerfilActivity extends Activity {
                 if(resultCode  == RESULT_OK) {
                     Intent it = new Intent(this, TrocaListaUsuariosActivity.class);
                     startActivityForResult(it,PERFIL_TROCA);
+
                 } else if (resultCode == RESULT_CANCELED){
+
                     Context context = getApplicationContext();
                     CharSequence text = "Seu Bluetooth está desligado. Ative-o para realizar troca de pokémons.";
                     int duration = Toast.LENGTH_SHORT;
@@ -45,13 +50,8 @@ public class PerfilActivity extends Activity {
                     toast.show();
                 }
             }
-        } catch (Exception ex) {
-            Context context = getApplicationContext();
-            CharSequence text = "Exceção.";
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
-            toast.show();
+        } catch (Exception e) {
+            Log.e("PERFIL", "ERRO: " + e.getMessage());
         }
 
     }
@@ -66,6 +66,7 @@ public class PerfilActivity extends Activity {
         TextView txtInicioAventura = (TextView) findViewById(R.id.txtInicioAventuraPerfil);
         TextView txtNumCapturas = (TextView) findViewById(R.id.txtNumCapturasPerfil);
         TextView txtNomeTreinador = (TextView) findViewById(R.id.txtNomeTreinadorPerfil);
+        troca = (Button) findViewById(R.id.buttonTroca);
 
         try {
             //Define o nome do treinador
@@ -103,15 +104,24 @@ public class PerfilActivity extends Activity {
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
 
+                troca.setEnabled(false);
+
                 return;
             }
             else if (!bluetoothAdapter.isEnabled()) {
+
+                if(!troca.isEnabled())
+                    troca.setEnabled(true);
+
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
 
                 onActivityResult(REQUEST_ENABLE_BT, 8989, enableBtIntent);
             }
             else  {
+                if(!troca.isEnabled())
+                    troca.setEnabled(true);
+
                 Intent it = new Intent(this, TrocaListaUsuariosActivity.class);
                 startActivityForResult(it,PERFIL_TROCA);
             }
