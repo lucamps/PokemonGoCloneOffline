@@ -83,6 +83,7 @@ public class TrocaListaUsuariosActivity extends Activity{
 
     public void updateBT(View v) {
 
+        avaliableUsers.clear();
         bluetoothAdapter.startDiscovery();
     }
 
@@ -91,7 +92,7 @@ public class TrocaListaUsuariosActivity extends Activity{
         TextView t = (TextView) findViewById(R.id.lista_usuarios);
         String s = "";
         for(int i=0; i<avaliableUsers.size(); i++) {
-            s += avaliableUsers.get(i);
+            s += avaliableUsers.get(i) + "\n";
         }
         t.setText(s);
     }
