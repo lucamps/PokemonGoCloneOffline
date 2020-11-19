@@ -1,8 +1,12 @@
 package teste.lucasvegi.pokemongooffline.Controller;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,10 +32,13 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
     boolean pode_alterar_oferta = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_troca_lista_pokemons);
+
+
 
         //obtem referências das views
 
@@ -76,10 +83,13 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
     }
 
+
+
     public void alterarOfertaTroca(View v){    }
 
     public void aceitarTroca(View v){
         pode_alterar_oferta = false;
+
     }
 
     public void rejeitarTroca(View v){
@@ -89,4 +99,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     public void clickVoltar(View v){
         finish();
     }
+
+
 }

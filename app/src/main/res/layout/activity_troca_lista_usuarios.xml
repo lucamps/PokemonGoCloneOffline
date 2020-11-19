@@ -136,19 +136,39 @@
 
     </RelativeLayout>
 
-    <TextView
+
+    <Button
+        android:id="@+id/buscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+        android:text="Buscar usuários"
         android:textStyle="normal"
-        android:textColor="#FFFFFF"
-        android:layout_marginLeft="10dp"
-        android:id="@+id/txtTesteTroca"
-        android:layout_centerVertical="true" />
-<!--    <ListView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:id="@+id/listaUsuariosTroca"-->
-<!--        android:layout_below="@+id/barraVoltarTroca"/>-->
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="updateBT"/>
+
+    <Button
+        android:id="@+id/listar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buscar"
+        android:text="Listar"
+        android:textStyle="normal"
+        android:textSize="20dp"
+        android:textColor="#000000"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="listar"/>
+
+    <TextView
+        android:id="@+id/lista_usuarios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/listar"
+        />
+
+
+
 </RelativeLayout>

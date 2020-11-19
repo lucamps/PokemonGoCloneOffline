@@ -24,7 +24,6 @@ import teste.lucasvegi.pokemongooffline.R;
 public class PerfilActivity extends Activity {
 
     public final static int PERFIL_TROCA = 1;
-
     public static final int REQUEST_ENABLE_BT = 402;
 
     // Verifica se o usuário habilitou o Bluetooth
