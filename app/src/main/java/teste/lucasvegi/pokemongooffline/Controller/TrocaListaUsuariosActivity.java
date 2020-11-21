@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,9 @@ public class TrocaListaUsuariosActivity extends Activity{
     static final int REQUEST_ENABLE_BT = 1;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     ArrayList<String> avaliableUsers = new ArrayList<String>();
+
+//    boolean travarBuscar = false;
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,13 @@ public class TrocaListaUsuariosActivity extends Activity{
     };
 
     public void updateBT(View v) {
+        Button bt = (Button) findViewById(R.id.buscar);
+
+        // Prevenção de "spamming" do botão
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 12300){
+            return;
+        }
+        mLastClickTime = SystemClock.elapsedRealtime();
 
         avaliableUsers.clear();
         bluetoothAdapter.startDiscovery();
