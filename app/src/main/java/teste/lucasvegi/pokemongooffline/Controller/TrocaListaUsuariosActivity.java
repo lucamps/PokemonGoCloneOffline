@@ -40,6 +40,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Button btn = (Button) findViewById(R.id.buscar);
 
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 //discovery starts, we can show progress dialog or perform other tasks
@@ -48,6 +49,8 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
                 toast.show();
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 //discovery finishes, dismiss progress dialog
+                btn.setEnabled(true);
+                btn.setTextColor(Color.parseColor("#000000"));
                 listar();
             }
         }
@@ -120,19 +123,13 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     public void updateBT(View v) {
 
         Button btn = (Button) findViewById(R.id.buscar);
-        btn.setEnabled(false);
         btn.setTextColor(Color.parseColor("#808080"));
+        btn.setEnabled(false);
 
-        // Prevenção de "spamming" do botão
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 12300)
-            return;
-
-        mLastClickTime = SystemClock.elapsedRealtime();
-        btn.setEnabled(true);
-        btn.setTextColor(Color.parseColor("#000000"));
 
         bluetoothDevices.clear();
 
+        // Filtro de controle para o método assíncrono startDiscovery
         IntentFilter filter = new IntentFilter();
 
         filter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -170,6 +167,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
+        unregisterReceiver(mReceiver);
     }
 
     @Override
