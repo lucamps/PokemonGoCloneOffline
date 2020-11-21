@@ -3,6 +3,8 @@ package teste.lucasvegi.pokemongooffline.Controller;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,8 +23,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.R;
@@ -34,8 +38,13 @@ import static teste.lucasvegi.pokemongooffline.Controller.PerfilActivity.PERFIL_
 public class TrocaListaUsuariosActivity extends Activity implements AdapterView.OnItemClickListener{
 
     static final int REQUEST_ENABLE_BT = 1;
+    protected static final String NAME = "SERVIDOR_TROCAS";
+    protected static final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     List<BluetoothDevice> bluetoothDevices;
+
+    AcceptThread acceptThread;
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -95,6 +104,10 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
         //inicializa a lista
         bluetoothDevices = new ArrayList<BluetoothDevice>();
+
+        //inicia o servidor
+        acceptThread = new AcceptThread();
+        acceptThread.start();
 
         //busca dispositivos
         //bluetoothAdapter.startDiscovery();
@@ -170,6 +183,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
+        acceptThread.cancel();
     }
 
     @Override
@@ -184,5 +198,57 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
         startActivity(intent);
 
+    }
+
+    private class AcceptThread extends Thread {
+        private final BluetoothServerSocket mmServerSocket;
+
+        public AcceptThread() {
+            // Use a temporary object that is later assigned to mmServerSocket
+            // because mmServerSocket is final.
+            BluetoothServerSocket tmp = null;
+            try {
+                // MY_UUID is the app's UUID string, also used by the client code.
+                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, uuid);
+            } catch (IOException e) {
+                Log.e("Socket Fail", "Socket's listen() method failed", e);
+            }
+            mmServerSocket = tmp;
+        }
+
+        public void run() {
+            BluetoothSocket socket = null;
+            // Keep listening until exception occurs or a socket is returned.
+            while (true) {
+                try {
+                    socket = mmServerSocket.accept();
+
+                    if (socket != null) {
+                        // A connection was accepted. Perform work associated with
+                        // the connection in a separate thread.
+                        manageMyConnectedSocket(socket);
+                        mmServerSocket.close();
+                        break;
+                    }
+                } catch (IOException e) {
+                    Log.e("Socket Fail", "Socket's accept() method failed", e);
+                    break;
+                }
+            }
+        }
+
+        // Closes the connect socket and causes the thread to finish.
+        public void cancel() {
+            try {
+                mmServerSocket.close();
+            } catch (IOException e) {
+                Log.e("Socket Fail", "Could not close the connect socket", e);
+            }
+        }
+    }
+
+    public void manageMyConnectedSocket(BluetoothSocket socket){
+        Toast.makeText(this, "Tentaram conectar", Toast.LENGTH_LONG).show();
+        acceptThread.cancel();
     }
 }
