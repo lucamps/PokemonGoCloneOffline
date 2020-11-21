@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import teste.lucasvegi.pokemongooffline.R;
 
@@ -25,6 +27,7 @@ public class TrocaListaUsuariosActivity extends Activity{
     static final int REQUEST_ENABLE_BT = 1;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     ArrayList<String> avaliableUsers = new ArrayList<String>();
+    List<BluetoothDevice> bluetoothDevices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,14 @@ public class TrocaListaUsuariosActivity extends Activity{
         }catch (Exception e){
             Log.e("TROCA", "ERRO: " + e.getMessage());
         }
+
+        //zera a lista
+        bluetoothDevices = null;
+
+        //inicializa a lista
+        bluetoothDevices = new ArrayList<BluetoothDevice>();
+
+        //busca dispositivos
         bluetoothAdapter.startDiscovery();
     }
 
@@ -71,6 +82,10 @@ public class TrocaListaUsuariosActivity extends Activity{
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                
+                //Adiciona o dispositivo na lista
+                bluetoothDevices.add(device);
+
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
 
@@ -84,6 +99,8 @@ public class TrocaListaUsuariosActivity extends Activity{
     public void updateBT(View v) {
 
         avaliableUsers.clear();
+        bluetoothDevices.clear();
+
         bluetoothAdapter.startDiscovery();
     }
 
@@ -118,5 +135,19 @@ public class TrocaListaUsuariosActivity extends Activity{
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int idx, long id) {
+        // Recupera o device selecionado
+        BluetoothDevice device = bluetoothDevices.get(idx);
+        String msg = device.getName() + " - " + device.getAddress();
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+        // Abre a tela do chat
+        Intent intent = new Intent(this, TrocaListaPokemonActivity.class);
+        intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
+        startActivity(intent);
+
     }
 }

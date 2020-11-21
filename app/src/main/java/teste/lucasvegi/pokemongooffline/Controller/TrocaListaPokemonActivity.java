@@ -3,6 +3,7 @@ package teste.lucasvegi.pokemongooffline.Controller;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +19,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.Model.Pokemon;
@@ -29,6 +32,14 @@ import teste.lucasvegi.pokemongooffline.View.AdapterTrocaPokemonsList;
 public class TrocaListaPokemonActivity extends Activity implements AdapterView.OnItemClickListener{
 
     private List<Pokemon> pokemons;
+
+    static final int REQUEST_ENABLE_BT = 1;
+
+    protected static final UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    private BluetoothDevice device;
+    private BluetoothSocket socket;
 
     boolean pode_alterar_oferta = true;
 
@@ -54,6 +65,37 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
         }catch (Exception e){
             Log.e("POKEDEX", "ERRO: " + e.getMessage());
+        }
+
+        if (bluetoothAdapter == null){
+            Toast.makeText(this, "Erro: Nenhum Adaptator de Bluetooth encontrado", Toast.LENGTH_LONG).show();
+            finish();
+        }
+        
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        device = getIntent().getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+        try{
+            if(device != null){
+                // Faz a conexão utilizando o mesmo UUID que o servidor utilizou
+                socket = device.createRfcommSocketToServiceRecord(uuid);
+
+                bluetoothAdapter.cancelDiscovery();
+                socket.connect();
+
+                Toast.makeText(this, "A conexão com " + device.getName() + ", " + device.getAddress() + " foi um sucesso!", Toast.LENGTH_LONG).show();
+            }
+            else{
+                Toast.makeText(this, "Erro: Nenhum dispositivo encontrado", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }catch (IOException e) {
+            Toast.makeText(this, "Erro: Não foi possível conectar com o dispositivo", Toast.LENGTH_LONG).show();
+            finish();
         }
     }
 
