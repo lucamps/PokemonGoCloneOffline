@@ -46,27 +46,6 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
     AcceptThread acceptThread;
 
-    // Complemento do comportamento do botão @updateBT
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-
-            String action = intent.getAction();
-            Button btn = (Button) findViewById(R.id.buscar);
-
-            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                // No início da busca, alerta o usuário para o período de espera
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(context, "Aguarde...", duration);
-                toast.show();
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                // Habilita o botão novamente e restaura a cor original
-                btn.setEnabled(true);
-                btn.setTextColor(Color.parseColor("#000000"));
-                listar();
-            }
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +85,18 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
                 bluetoothDevices.add(device);
 
             }
+            Button btn = (Button) findViewById(R.id.buscar);
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                // No início da busca, alerta o usuário para o período de espera
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, "Aguarde...", duration);
+                toast.show();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                // Habilita o botão novamente e restaura a cor original
+                btn.setEnabled(true);
+                btn.setTextColor(Color.parseColor("#000000"));
+                listar();
+            }
         }
     };
 
@@ -124,7 +115,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
-        registerReceiver(mReceiver, filter);
+        registerReceiver(receiver, filter);
         bluetoothAdapter.startDiscovery();
     }
 
@@ -156,7 +147,6 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
         acceptThread.cancel();
-        unregisterReceiver(mReceiver);
     }
 
     @Override
