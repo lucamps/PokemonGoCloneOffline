@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     tools:context="teste.lucasvegi.pokemongooffline.Controller.TrocaListaUsuariosActivity">
 
+    <!-- Header bar -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -27,148 +28,58 @@
             android:onClick="clickVoltar"/>
 
         <TextView
+            android:id="@+id/txtTituloPokedex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/voltarTroca"
+            android:layout_marginLeft="10dp"
+
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Usuários próximos"
             android:textStyle="normal"
-            android:textColor="#FFFFFF"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/txtTituloPokedex"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/voltarTroca" />
+            android:textColor="#FFFFFF" />
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <!-- Lista de usuários disponíveis -->
+    <ListView
+        android:id="@+id/bluetooth_user_list"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:id="@+id/listaUsuariosTroca"
-        android:layout_below="@id/barraVoltarTroca">
+        android:layout_below="@id/barraVoltarTroca"
+        android:layout_above="@id/buscar"
+        />
 
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/listaUsuariosTroca1">
-
-            <ImageView
-                android:id="@+id/Usuario1Imagem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                android:layout_margin="10dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/female_profile"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pessoa1"
-                android:textStyle="normal"
-                android:textSize="20dp"
-                android:textColor="#000000"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/Usuario1Nome"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/Usuario1Imagem" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TROCAR"
-                android:textStyle="normal"
-                android:textSize="20dp"
-                android:textColor="#000000"
-                android:id="@+id/Usuario1Trocar"
-                android:layout_centerVertical="true"
-                android:onClick="exchange"
-                android:layout_alignParentRight="true" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:id="@+id/listaUsuariosTroca2"
-            android:layout_below="@id/listaUsuariosTroca1">
-
-            <ImageView
-                android:id="@+id/Usuario2Imagem"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                android:layout_margin="10dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/male_profile"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pessoa2"
-                android:textStyle="normal"
-                android:textSize="20dp"
-                android:textColor="#000000"
-                android:layout_marginLeft="20dp"
-                android:id="@+id/Usuario2Nome"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/Usuario2Imagem" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TROCAR"
-                android:textStyle="normal"
-                android:textSize="20dp"
-                android:textColor="#000000"
-                android:id="@+id/Usuario2Trocar"
-                android:layout_centerVertical="true"
-                android:onClick="exchange"
-                android:layout_alignParentRight="true" />
-        </RelativeLayout>
-
-    </RelativeLayout>
-
-
+    <!-- Botões de controle da Busca/Listagem de dispostivos por Bluetooth-->
     <Button
         android:id="@+id/buscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@id/listar"
+        android:layout_centerHorizontal="true"
+
         android:text="Buscar usuários"
         android:textStyle="normal"
         android:textSize="20dp"
         android:textColor="#000000"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="updateBT"/>
 
+        android:onClick="updateBT"/>
     <Button
         android:id="@+id/listar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buscar"
+        android:layout_alignParentBottom="true"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+
         android:text="Listar"
         android:textStyle="normal"
         android:textSize="20dp"
         android:textColor="#000000"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
+
         android:onClick="listar"/>
-
-    <TextView
-        android:id="@+id/lista_usuarios"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/listar"
-        />
-
 
 
 </RelativeLayout>
