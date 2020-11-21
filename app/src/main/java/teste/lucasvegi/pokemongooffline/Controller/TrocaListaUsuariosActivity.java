@@ -192,6 +192,9 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         public void run() {
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned.
+
+            Log.e("AcceptThread", "Running");
+
             while (true) {
                 try {
                     socket = mmServerSocket.accept();
@@ -212,6 +215,9 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
         // Closes the connect socket and causes the thread to finish.
         public void cancel() {
+
+            Log.e("AcceptThread", "Closing");
+
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
