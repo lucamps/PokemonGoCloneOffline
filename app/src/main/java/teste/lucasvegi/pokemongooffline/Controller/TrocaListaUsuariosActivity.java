@@ -7,26 +7,31 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.R;
+import teste.lucasvegi.pokemongooffline.View.AdapterPokedex;
+import teste.lucasvegi.pokemongooffline.View.AdapterTroca;
 
 import static teste.lucasvegi.pokemongooffline.Controller.PerfilActivity.PERFIL_TROCA;
 
-public class TrocaListaUsuariosActivity extends Activity{
+public class TrocaListaUsuariosActivity extends Activity implements AdapterView.OnItemClickListener{
 
     static final int REQUEST_ENABLE_BT = 1;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    ArrayList<String> avaliableUsers = new ArrayList<String>();
     List<BluetoothDevice> bluetoothDevices;
 
     @Override
@@ -82,15 +87,10 @@ public class TrocaListaUsuariosActivity extends Activity{
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                
+
                 //Adiciona o dispositivo na lista
+                if(device.getName() != null)
                 bluetoothDevices.add(device);
-
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-
-                if(deviceName != null)
-                    avaliableUsers.add(deviceName + "," + deviceHardwareAddress);
 
             }
         }
@@ -98,20 +98,25 @@ public class TrocaListaUsuariosActivity extends Activity{
 
     public void updateBT(View v) {
 
-        avaliableUsers.clear();
         bluetoothDevices.clear();
-
         bluetoothAdapter.startDiscovery();
     }
 
     public void listar(View v) {
 
-        TextView t = (TextView) findViewById(R.id.lista_usuarios);
-        String s = "";
-        for(int i=0; i<avaliableUsers.size(); i++) {
-            s += avaliableUsers.get(i) + "\n";
+        try {
+
+            //Prepara a ListView customizada da troca de usuários
+            ListView listView = (ListView) findViewById(R.id.bluetooth_user_list);
+            AdapterTroca adapterTroca = new AdapterTroca(bluetoothDevices, this);
+
+            listView.setAdapter(adapterTroca);
+            listView.setOnItemClickListener(this);
+
+        }catch (Exception e){
+            Log.e("POKEDEX", "ERRO: " + e.getMessage());
         }
-        t.setText(s);
+
     }
 
     public void exchange(View v) {
