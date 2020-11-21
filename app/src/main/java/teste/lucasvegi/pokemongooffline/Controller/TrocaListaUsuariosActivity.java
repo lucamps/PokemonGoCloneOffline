@@ -35,28 +35,28 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
     static final int REQUEST_ENABLE_BT = 1;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    List<BluetoothDevice> bluetoothDevices;
+    List<BluetoothDevice> bluetoothDevices = null;
 
+    // Complemento do comportamento do botão @updateBT
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
+
             String action = intent.getAction();
             Button btn = (Button) findViewById(R.id.buscar);
 
             if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                //discovery starts, we can show progress dialog or perform other tasks
+                // No início da busca, alerta o usuário para o período de espera
                 int duration = Toast.LENGTH_LONG;
                 Toast toast = Toast.makeText(context, "Aguarde...", duration);
                 toast.show();
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                //discovery finishes, dismiss progress dialog
+                // Habilita o botão novamente e restaura a cor original
                 btn.setEnabled(true);
                 btn.setTextColor(Color.parseColor("#000000"));
                 listar();
             }
         }
     };
-
-    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,40 +67,14 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
 
-        CharSequence text;
-        if (bluetoothAdapter == null) {
-            text = "Deu ruim";
-
-        } else {
-            text = "Deu bom";
-        }
-
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, text, duration);
-        toast.show();
-
-        if (!bluetoothAdapter.isEnabled()) {
+         if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        //obtem referências das views
-
-        try {
-
-
-        }catch (Exception e){
-            Log.e("TROCA", "ERRO: " + e.getMessage());
-        }
-
-        //zera a lista
-        bluetoothDevices = null;
-
-        //inicializa a lista
+        // Inicializa a lista
         bluetoothDevices = new ArrayList<BluetoothDevice>();
 
-        //busca dispositivos
-        //bluetoothAdapter.startDiscovery();
     }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -125,7 +99,6 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         Button btn = (Button) findViewById(R.id.buscar);
         btn.setTextColor(Color.parseColor("#808080"));
         btn.setEnabled(false);
-
 
         bluetoothDevices.clear();
 
