@@ -153,13 +153,17 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     public void onItemClick(AdapterView<?> adapterView, View view, int idx, long id) {
         // Recupera o device selecionado
         BluetoothDevice device = bluetoothDevices.get(idx);
-        String msg = device.getName() + " - " + device.getAddress();
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 
-        // Abre a tela do chat
-        Intent intent = new Intent(this, TrocaListaPokemonActivity.class);
-        intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
-        startActivity(intent);
+        ConnectThread client = new ConnectThread(device);
+        client.start();
+
+//        String msg = device.getName() + " - " + device.getAddress();
+//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+//
+//        // Abre a tela do chat
+//        Intent intent = new Intent(this, TrocaListaPokemonActivity.class);
+//        intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
+//        startActivity(intent);
 
     }
 
@@ -219,5 +223,58 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     public void manageMyConnectedSocket(BluetoothSocket socket){
         Toast.makeText(this, "Tentaram conectar", Toast.LENGTH_LONG).show();
         acceptThread.cancel();
+    }
+
+    private class ConnectThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final BluetoothDevice mmDevice;
+
+        public ConnectThread(BluetoothDevice device) {
+            // Use a temporary object that is later assigned to mmSocket
+            // because mmSocket is final.
+            BluetoothSocket tmp = null;
+            mmDevice = device;
+
+            try {
+                // Get a BluetoothSocket to connect with the given BluetoothDevice.
+                // MY_UUID is the app's UUID string, also used in the server code.
+                tmp = device.createRfcommSocketToServiceRecord(uuid);
+            } catch (IOException e) {
+                Log.e("TROCA", "Socket's create() method failed", e);
+            }
+            mmSocket = tmp;
+        }
+
+        public void run() {
+            // Cancel discovery because it otherwise slows down the connection.
+            bluetoothAdapter.cancelDiscovery();
+
+            try {
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
+                mmSocket.connect();
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and return.
+                try {
+                    mmSocket.close();
+                } catch (IOException closeException) {
+                    Log.e("TROCA", "Could not close the client socket", closeException);
+                }
+                return;
+            }
+
+            // The connection attempt succeeded. Perform work associated with
+            // the connection in a separate thread.
+            manageMyConnectedSocket(mmSocket);
+        }
+
+        // Closes the client socket and causes the thread to finish.
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) {
+                Log.e("TROCA", "Could not close the client socket", e);
+            }
+        }
     }
 }
