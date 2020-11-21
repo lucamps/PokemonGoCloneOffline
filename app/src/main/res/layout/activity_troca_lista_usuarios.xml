@@ -57,8 +57,8 @@
         android:id="@+id/buscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/listar"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
 
         android:text="Buscar usuários"
         android:textStyle="normal"
@@ -66,20 +66,7 @@
         android:textColor="#000000"
 
         android:onClick="updateBT"/>
-    <Button
-        android:id="@+id/listar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
 
-        android:text="Listar"
-        android:textStyle="normal"
-        android:textSize="20dp"
-        android:textColor="#000000"
-
-        android:onClick="listar"/>
 
 
 </RelativeLayout>

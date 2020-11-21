@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -35,6 +36,22 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     static final int REQUEST_ENABLE_BT = 1;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     List<BluetoothDevice> bluetoothDevices;
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                //discovery starts, we can show progress dialog or perform other tasks
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, "Aguarde...", duration);
+                toast.show();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //discovery finishes, dismiss progress dialog
+                listar();
+            }
+        }
+    };
 
     private long mLastClickTime = 0;
 
@@ -80,7 +97,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         bluetoothDevices = new ArrayList<BluetoothDevice>();
 
         //busca dispositivos
-        bluetoothAdapter.startDiscovery();
+        //bluetoothAdapter.startDiscovery();
     }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -101,19 +118,32 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     };
 
     public void updateBT(View v) {
-        Button bt = (Button) findViewById(R.id.buscar);
+
+        Button btn = (Button) findViewById(R.id.buscar);
+        btn.setEnabled(false);
+        btn.setTextColor(Color.parseColor("#808080"));
 
         // Prevenção de "spamming" do botão
-        if (SystemClock.elapsedRealtime() - mLastClickTime < 12300){
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 12300)
             return;
-        }
+
         mLastClickTime = SystemClock.elapsedRealtime();
+        btn.setEnabled(true);
+        btn.setTextColor(Color.parseColor("#000000"));
 
         bluetoothDevices.clear();
+
+        IntentFilter filter = new IntentFilter();
+
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+        registerReceiver(mReceiver, filter);
         bluetoothAdapter.startDiscovery();
     }
 
-    public void listar(View v) {
+    public void listar() {
 
         try {
 
@@ -125,20 +155,9 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
             listView.setOnItemClickListener(this);
 
         }catch (Exception e){
-            Log.e("POKEDEX", "ERRO: " + e.getMessage());
+            Log.e("TROCA", "ERRO AO LISTAR: " + e.getMessage());
         }
 
-    }
-
-    public void exchange(View v) {
-        try {
-//            Intent it = new Intent(this, TrocaListaPokemonActivity.class);
-//            startActivityForResult(it,PERFIL_TROCA);
-            Intent it = new Intent(this, TrocaListaPokemonActivity.class);
-            startActivityForResult(it,PERFIL_TROCA);
-        } catch (Exception e){
-            Log.e("TROCA", "ERRO: " + e.getMessage());
-        }
     }
 
     public void clickVoltar(View v){

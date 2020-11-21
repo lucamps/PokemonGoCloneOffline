@@ -49,8 +49,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_troca_lista_pokemons);
 
-
-
         //obtem referências das views
 
         try {
@@ -82,10 +80,13 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
         try{
             if(device != null){
                 // Faz a conexão utilizando o mesmo UUID que o servidor utilizou
+                Log.e("SOCKET", "CRIANDO SOCKET");
                 socket = device.createRfcommSocketToServiceRecord(uuid);
 
-                bluetoothAdapter.cancelDiscovery();
+                //bluetoothAdapter.cancelDiscovery();
+                Log.e("SOCKET", "TENTANDO CONECTAR");
                 socket.connect();
+                Log.e("SOCKET", "CONECTADO COM SUCESSO");
 
                 Toast.makeText(this, "A conexão com " + device.getName() + ", " + device.getAddress() + " foi um sucesso!", Toast.LENGTH_LONG).show();
             }
@@ -94,7 +95,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
                 finish();
             }
         }catch (IOException e) {
-            Toast.makeText(this, "Erro: Não foi possível conectar com o dispositivo", Toast.LENGTH_LONG).show();
+            Log.e("SOCKET", "Erro: Não foi possível conectar com o dispositivo" + e.getMessage());
             finish();
         }
     }
