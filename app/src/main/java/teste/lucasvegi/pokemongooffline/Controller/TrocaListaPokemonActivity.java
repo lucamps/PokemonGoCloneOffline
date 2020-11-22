@@ -170,6 +170,8 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             byte[] msg = ("CHANGE " + Integer.toString(ofertado.getNumero())).getBytes();
             connectedThread.write(msg);
 
+            rejeitarTroca(false);
+
             //teste, depois tirar
 //            int pos2 = position+1;
 //            if(pos2 > pokemons.size())
@@ -189,32 +191,37 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     }
 
     public void aceitarTroca(View v){
+        aceitarTroca();
+    }
 
-        if(connectedThread != null){
-            byte data[] = "Se isso aparecer. Sucesso!".getBytes();
-            connectedThread.write(data);
+    public void aceitarTroca(){
+        if(ofertado == null) {
+            Context context = getApplicationContext();
+            CharSequence text = "Você não fazer uma troca sem ofertar algum Pokémon! Ofereça algum Pokémon da sua coleção.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+        if(recebido == null) {
+            Context context = getApplicationContext();
+            CharSequence text = "Você não fazer uma troca sem receber algum Pokémon! Espere o outro treinador fazer a oferta dele.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
         }
 
-//        if(ofertado == null) {
-//            Context context = getApplicationContext();
-//            CharSequence text = "Você não fazer uma troca sem ofertar algum Pokémon! Ofereça algum Pokémon da sua coleção.";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
-//            return;
-//        }
-//        if(recebido == null) {
-//            Context context = getApplicationContext();
-//            CharSequence text = "Você não fazer uma troca sem receber algum Pokémon! Espere o outro treinador fazer a oferta dele.";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
-//            return;
-//        }
-//
-//        if(outro_aceitou) {
+        eu_aceitei = true;
+        aceitar.setEnabled(false);
+        rejeitar.setEnabled(true);
+        adapterPokedex.setAreAllEnabled(false);
+        euAceitei.setImageResource(android.R.drawable.checkbox_on_background);
+
+        if(outro_aceitou) {
+            fazTroca();
 //            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 //            Criteria criteria = new Criteria();
 //            Context ctx = this;
@@ -269,25 +276,39 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 //            Toast toast = Toast.makeText(context, text, duration);
 //            toast.show();
 //            finish();
-//        }
-//        else {
-////            pode_alterar_oferta = false;
-//            aceitar.setEnabled(false);
-//            rejeitar.setEnabled(true);
-//            adapterPokedex.setAreAllEnabled(false);
-//            euAceitei.setImageResource(android.R.drawable.checkbox_on_background);
-//
-//        }
-
+        }
+        else {
+//            pode_alterar_oferta = false;
+            byte[] msg = "ACCEPT".getBytes();
+            connectedThread.write(msg);
+        }
     }
 
     public void rejeitarTroca(View v){
-//        pode_alterar_oferta = true;
-//        aceitar.setEnabled(true);
-//        rejeitar.setEnabled(false);
-//        euAceitei.setImageResource(android.R.drawable.checkbox_off_background);
-//        adapterPokedex.setAreAllEnabled(true);
-//        adapterPokedex.notifyDataSetChanged();
+        //pode_alterar_oferta = true;
+        rejeitarTroca(true);
+    }
+
+    public void rejeitarTroca(boolean sendMsg){
+        eu_aceitei = false;
+        outro_aceitou = false;
+        aceitar.setEnabled(true);
+        rejeitar.setEnabled(false);
+        euAceitei.setImageResource(android.R.drawable.checkbox_off_background);
+        outroAceitou.setImageResource(android.R.drawable.checkbox_off_background);
+        adapterPokedex.setAreAllEnabled(true);
+        adapterPokedex.notifyDataSetChanged();
+
+        if(sendMsg) {
+            byte[] msg = "REJECT".getBytes();
+            connectedThread.write(msg);
+        }
+    }
+
+    public void fazTroca(){
+        if(eu_aceitei && outro_aceitou){
+            Toast.makeText(this, "O outro aceitou!", Toast.LENGTH_LONG);
+        }
     }
 
     public void clickVoltar(View v){
@@ -391,14 +412,26 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
                 Integer position = Integer.parseInt(flags[1]) - 1;
 
-                ofertado = (Pokemon) pokemons.get(position);
+                recebido = (Pokemon) pokemons.get(position);
 
                 ImageView pokemon_selecionado = (ImageView) findViewById(R.id.outro_pokemon_selecionado);
-                pokemon_selecionado.setImageResource(ofertado.getIcone());
+                pokemon_selecionado.setImageResource(recebido.getIcone());
 
-                eu_aceitei = false;
-                outro_aceitou = false;
+                rejeitarTroca(false);
 
+                break;
+
+            case "ACCEPT":
+                outro_aceitou = true;
+                outroAceitou.setImageResource(android.R.drawable.checkbox_on_background);
+
+                if(eu_aceitei && outro_aceitou)
+                    fazTroca();
+
+                break;
+
+            case "REJECT":
+                rejeitarTroca(false);
                 break;
         }
     }
