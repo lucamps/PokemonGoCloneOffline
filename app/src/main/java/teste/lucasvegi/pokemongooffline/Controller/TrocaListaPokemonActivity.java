@@ -53,6 +53,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private ConnectedThread connectedThread;
+    private final Handler mHandler = new Handler();
 
     private Handler handler; // handler that gets info from Bluetooth service
 
@@ -308,15 +309,23 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             while (true) {
                 try {
                     // Read from the InputStream.
-                    numBytes = mmInStream.read(mmBuffer);
+                    /*numBytes = mmInStream.read(mmBuffer);
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = handler.obtainMessage(
                             MessageConstants.MESSAGE_READ, numBytes, -1,
                             mmBuffer);
-                    readMsg.sendToTarget();
+                    readMsg.sendToTarget();*/
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run () {
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(getBaseContext(), "Deu certo ...", duration);
+                            toast.show();
+                        }
+                    });
                     Log.e("TROCA", "Recebendo: " + mmBuffer.toString());
-                } catch (IOException e) {
-                    Log.d(TAG, "Input stream was disconnected", e);
+                } catch (Exception e) {
+                    Log.d("TROCA", "Input stream was disconnected " + e.getMessage());
                     break;
                 }
             }
