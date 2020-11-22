@@ -194,6 +194,11 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
         aceitarTroca();
     }
 
+//        if(connectedThread != null){
+//            byte data[] = "25".getBytes();
+//            connectedThread.write(data);
+//        }
+
     public void aceitarTroca(){
         if(ofertado == null) {
             Context context = getApplicationContext();
@@ -222,59 +227,62 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
         if(outro_aceitou) {
             fazTroca();
-//            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//            Criteria criteria = new Criteria();
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
 //            Context ctx = this;
-//
-//            PackageManager packageManager = getPackageManager();
-//            boolean hasGPS = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
-//
-//            if (hasGPS) {
-//                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-//                Log.i("LOCATION", "usando GPS");
-//            } else {
-//                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-//                Log.i("LOCATION", "usando WI-FI ou dados");
-//            }
-//
-//            String provider = lm.getBestProvider(criteria, true);
-//
-//            if (provider == null) {
-//                Log.e("TROCA", "Nenhum provedor encontrado");
-//
-//                Context context = getApplicationContext();
-//                CharSequence text = "Não pudemos obter sua posição geográfica. Tente novamente.";
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(context, text, duration);
-//                toast.show();
-//                return;
-//            } else {
-//                Log.i("TROCA", "Esta sendo utilizado o provedor " + provider);
-//
-//                lm.requestLocationUpdates(provider, 5000, 10, (LocationListener) ctx);
-////                lm.requestSingleUpdate(provider, , null );
-////                lm.requestSingleUpdate(provider, );
-//            }
-//
-//            double lat = lm.getLastKnownLocation(provider).getLatitude();
-//            double lon = lm.getLastKnownLocation(provider).getLongitude();
-//            Aparecimento ap = new Aparecimento();
-//            ap.setLatitude(lat); ap.setLongitude(lon);
-//            ap.setPokemon(recebido);
-////            ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
-//
-//            for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
-//                if(!capt.getFoiTrocado())
-//                    capt.setFoiTrocado(true);
-//            }
-//
-//            Context context = getApplicationContext();
-//            CharSequence text = "Troca realizada com sucesso!";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
+
+            PackageManager packageManager = getPackageManager();
+            boolean hasGPS = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
+
+            if (hasGPS) {
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                Log.i("LOCATION", "usando GPS");
+            } else {
+                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+                Log.i("LOCATION", "usando WI-FI ou dados");
+            }
+
+            String provider = lm.getBestProvider(criteria, true);
+
+            if (provider == null) {
+                Log.e("TROCA", "Nenhum provedor encontrado");
+
+                Context context = getApplicationContext();
+                CharSequence text = "Não pudemos obter sua posição geográfica. Tente novamente.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                return;
+            } else {
+                Log.i("TROCA", "Esta sendo utilizado o provedor " + provider);
+
+            }
+
+            double lat = lm.getLastKnownLocation(provider).getLatitude();
+            double lon = lm.getLastKnownLocation(provider).getLongitude();
+            Aparecimento ap = new Aparecimento();
+            ap.setLatitude(lat); ap.setLongitude(lon);
+            ap.setPokemon(recebido);
+            ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
+
+            PokemonCapturado paraEditar;
+            for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
+                if(!capt.getFoiTrocado()) {
+                    capt.setFoiTrocado(true);
+                    paraEditar = capt;
+                    break;
+                }
+            }
+
+
+            Context context = getApplicationContext();
+//            CharSequence text = "Coords: " + String.valueOf(ap.getLatitude()) + " " + String.valueOf(ap.getLongitude());
+            CharSequence text = "Troca realizada com sucesso!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
 //            finish();
         }
         else {

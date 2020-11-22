@@ -179,6 +179,7 @@ public class Usuario {
             valores.put("dtCaptura", dtCap);
             valores.put("latitude", aparecimento.getLatitude());
             valores.put("longitude", aparecimento.getLongitude());
+            valores.put("foiTrocado", false);
 
             //Persiste captura no banco
             BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
