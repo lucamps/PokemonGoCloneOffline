@@ -26,6 +26,7 @@ import java.util.UUID;
 import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.Model.Pokemon;
 import teste.lucasvegi.pokemongooffline.R;
+import teste.lucasvegi.pokemongooffline.Util.MyApp;
 import teste.lucasvegi.pokemongooffline.View.AdapterPokedex;
 import teste.lucasvegi.pokemongooffline.View.AdapterTrocaPokemonsList;
 
@@ -65,39 +66,15 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             Log.e("POKEDEX", "ERRO: " + e.getMessage());
         }
 
-        if (bluetoothAdapter == null){
-            Toast.makeText(this, "Erro: Nenhum Adaptator de Bluetooth encontrado", Toast.LENGTH_LONG).show();
-            finish();
-        }
-        
         if (!bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        device = getIntent().getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+        socket = MyApp.getBluetoothSocket();
 
-        try{
-            if(device != null){
-                // Faz a conexão utilizando o mesmo UUID que o servidor utilizou
-                Log.e("SOCKET", "CRIANDO SOCKET");
-                socket = device.createRfcommSocketToServiceRecord(uuid);
-
-                //bluetoothAdapter.cancelDiscovery();
-                Log.e("SOCKET", "TENTANDO CONECTAR");
-                socket.connect();
-                Log.e("SOCKET", "CONECTADO COM SUCESSO");
-
-                Toast.makeText(this, "A conexão com " + device.getName() + ", " + device.getAddress() + " foi um sucesso!", Toast.LENGTH_LONG).show();
-            }
-            else{
-                Toast.makeText(this, "Erro: Nenhum dispositivo encontrado", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }catch (IOException e) {
-            Log.e("SOCKET", "Erro: Não foi possível conectar com o dispositivo" + e.getMessage());
-            finish();
-        }
+        if(socket != null)
+            Log.e("TROCA", "Socket encontrado");
     }
 
     @Override

@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.R;
+import teste.lucasvegi.pokemongooffline.Util.MyApp;
 import teste.lucasvegi.pokemongooffline.View.AdapterPokedex;
 import teste.lucasvegi.pokemongooffline.View.AdapterTroca;
 
@@ -293,5 +294,10 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
         if(acceptThread != null)
             acceptThread.cancel();
+
+        MyApp.setBluetoothSocket(socket);
+
+        Intent it = new Intent(this, TrocaListaPokemonActivity.class);
+        startActivity(it);
     }
 }
