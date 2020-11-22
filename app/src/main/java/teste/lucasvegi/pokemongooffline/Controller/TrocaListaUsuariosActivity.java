@@ -44,7 +44,8 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     List<BluetoothDevice> bluetoothDevices = null;
 
-    AcceptThread acceptThread;
+    protected AcceptThread acceptThread;
+    protected ConnectThread connectThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,11 +143,14 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
 
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
-        acceptThread.cancel();
+
+        if(acceptThread != null)
+            acceptThread.cancel();
+
+        super.onDestroy();
     }
 
     @Override
@@ -154,8 +158,13 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         // Recupera o device selecionado
         BluetoothDevice device = bluetoothDevices.get(idx);
 
-        ConnectThread client = new ConnectThread(device);
-        client.start();
+        //Encerra a conexão antiga
+        if(connectThread != null)
+            connectThread.cancel();
+
+        //Inicia uma nova
+        connectThread = new ConnectThread(device);
+        connectThread.start();
 
 //        String msg = device.getName() + " - " + device.getAddress();
 //        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
@@ -187,7 +196,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned.
 
-            Log.e("AcceptThread", "Running");
+            Log.e("TROCA", "Running Server");
 
             while (true) {
                 try {
@@ -201,7 +210,7 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
                         break;
                     }
                 } catch (IOException e) {
-                    Log.e("Socket Fail", "Socket's accept() method failed", e);
+                    Log.e("TROCA", "Socket's accept() method failed", e);
                     break;
                 }
             }
@@ -210,19 +219,14 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         // Closes the connect socket and causes the thread to finish.
         public void cancel() {
 
-            Log.e("AcceptThread", "Closing");
+            Log.e("TROCA", "Closing Server");
 
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
-                Log.e("Socket Fail", "Could not close the connect socket", e);
+                Log.e("TROCA", "Could not close the connect socket", e);
             }
         }
-    }
-
-    public void manageMyConnectedSocket(BluetoothSocket socket){
-        Toast.makeText(this, "Tentaram conectar", Toast.LENGTH_LONG).show();
-        acceptThread.cancel();
     }
 
     private class ConnectThread extends Thread {
@@ -249,6 +253,8 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
             // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
 
+            Log.e("TROCA", "Running Client");
+
             try {
                 // Connect to the remote device through the socket. This call blocks
                 // until it succeeds or throws an exception.
@@ -270,11 +276,22 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
 
         // Closes the client socket and causes the thread to finish.
         public void cancel() {
+
+            Log.e("Troca", "Closing Client");
+
             try {
                 mmSocket.close();
             } catch (IOException e) {
                 Log.e("TROCA", "Could not close the client socket", e);
             }
         }
+    }
+
+    public void manageMyConnectedSocket(BluetoothSocket socket){
+
+        Log.e("TROCA", "Conexao Efetuada");
+
+        if(acceptThread != null)
+            acceptThread.cancel();
     }
 }
