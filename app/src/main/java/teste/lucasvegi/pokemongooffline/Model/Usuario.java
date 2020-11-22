@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,9 +84,29 @@ public class Usuario {
         this.dtCadastro = dtCadastro;
     }
 
-    public Map<Pokemon, List<PokemonCapturado>> getPokemons() {
-        return pokemons;
-    }
+    public Map<Pokemon, List<PokemonCapturado>> getPokemons() { return pokemons; /*getPokemons(true);*/ }
+
+//    public Map<Pokemon, List<PokemonCapturado>> getPokemons(boolean pegarTrocados) {
+////        if(pegarTrocados)
+////            Log.e("RODRIGO", "AVISO: true");
+////        else
+////            Log.e("RODRIGO", "AVISO: false");
+//
+//        if(pegarTrocados)
+//            return pokemons;
+//
+//        Map<Pokemon, List<PokemonCapturado>> pkmns = Collections.EMPTY_MAP;
+//        for (Pokemon pkmn: pokemons.keySet()) {
+//            List<PokemonCapturado> capturados = Collections.EMPTY_LIST;
+//            for (PokemonCapturado capt: pokemons.get(pkmn)) {
+//                if (!capt.getFoiTrocado())
+//                    capturados.add(capt);
+//            }
+//            if(!capturados.isEmpty())
+//                pkmns.put(pkmn, capturados);
+//        }
+//        return pkmns;
+//    }
 
     private void preencherCapturas(){
         //TODO: verificar se é necessário sincronizar com o server antes dessa operação. Nova operação da controladora será necessária para isso!
@@ -189,11 +210,31 @@ public class Usuario {
         }
     }
 
-    public int getQuantidadeCapturas(Pokemon pkmn){
-        if(pokemons.containsKey(pkmn)){
-            return pokemons.get(pkmn).size();
+    public int getQuantidadeCapturas(Pokemon pkmn, boolean pegarTrocados){
+//        if(pegarTrocados)
+//            Log.e("RODRIGO", "AVISO: true");
+//        else
+//            Log.e("RODRIGO", "AVISO: false");
+        if(pegarTrocados) {
+            if (pokemons.containsKey(pkmn)) {
+                return pokemons.get(pkmn).size();
+            }
+        } else {
+            if(pkmn == null) return 0;
+            int ans = 0;
+            if (pokemons.containsKey(pkmn)) {
+                for (PokemonCapturado capt: pokemons.get(pkmn)) {
+                    if (!capt.getFoiTrocado())
+                        ans++;
+                }
+                return ans;
+            }
         }
         return 0;
+    }
+
+    public int getQuantidadeCapturas(Pokemon pkmn){
+        return getQuantidadeCapturas(pkmn, true);
     }
 
 }

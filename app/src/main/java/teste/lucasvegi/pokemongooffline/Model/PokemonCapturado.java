@@ -7,6 +7,7 @@ public class PokemonCapturado {
     private double latitude;
     private double longitude;
     private String dtCaptura;
+    private boolean foiTrocado = false;
 
     public double getLatitude() {
         return latitude;
@@ -30,5 +31,13 @@ public class PokemonCapturado {
 
     public void setDtCaptura(String dtCaptura) {
         this.dtCaptura = dtCaptura;
+    }
+
+    public boolean getFoiTrocado() {
+        return foiTrocado;
+    }
+
+    public void setFoiTrocado(boolean foiTrocado) {
+        this.foiTrocado = foiTrocado;
     }
 }

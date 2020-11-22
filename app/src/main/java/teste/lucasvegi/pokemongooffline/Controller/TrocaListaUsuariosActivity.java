@@ -73,6 +73,15 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         //bluetoothAdapter.startDiscovery();
     }
 
+    public void exchange(View v) {
+        try {
+            Intent it = new Intent(this, TrocaListaPokemonActivity.class);
+            startActivityForResult(it,PERFIL_TROCA);
+        } catch (Exception e){
+            Log.e("TROCA", "ERRO: " + e.getMessage());
+        }
+    }
+
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();

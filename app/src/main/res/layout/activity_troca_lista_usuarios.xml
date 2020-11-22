@@ -42,12 +42,22 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/trocaTesteBTN"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/barraVoltarTroca"
+        android:text="Teste: Dummy User"
+        android:onClick="exchange"
+        />
+
+
     <!-- Lista de usuários disponíveis -->
     <ListView
         android:id="@+id/bluetooth_user_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/barraVoltarTroca"
+        android:layout_below="@id/trocaTesteBTN"
         android:layout_above="@id/buscar"
         />
 

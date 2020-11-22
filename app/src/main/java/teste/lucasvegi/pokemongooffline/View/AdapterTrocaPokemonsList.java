@@ -21,7 +21,8 @@ public class AdapterTrocaPokemonsList extends BaseAdapter {
 
     private List<Pokemon> pokemons;
     private Activity act;
-
+    private boolean areAllEnabled = true;
+    private int selected = -1;
 
     public AdapterTrocaPokemonsList(List<Pokemon> pokemons, Activity act) {
         try {
@@ -53,7 +54,7 @@ public class AdapterTrocaPokemonsList extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
-            View view = act.getLayoutInflater().inflate(R.layout.lista_pokedex_personalizada, parent, false);
+            View view = act.getLayoutInflater().inflate(R.layout.lista_pokedex_personalizada_trocas, parent, false);
             View view2 = act.getLayoutInflater().inflate(R.layout.lista_pokedex_personalizada_null, parent, false);
             Pokemon pkmn = pokemons.get(position);
 
@@ -61,14 +62,18 @@ public class AdapterTrocaPokemonsList extends BaseAdapter {
 
             TextView nomePokemon = (TextView)
                     view.findViewById(R.id.txtNomePokemonPokedex);
+            TextView numeroPossuidos = (TextView)
+                    view.findViewById(R.id.txtNumeroPossuidosPokedex);
             TextView numeroPokemon = (TextView)
                     view.findViewById(R.id.txtNumeroPokemonPokedex);
             ImageView imagem = (ImageView)
                     view.findViewById(R.id.imagemPokemonPokedex);
 
+            int numPossuidos = ControladoraFachadaSingleton.getInstance().getUsuario().getQuantidadeCapturas(pkmn,false);
             //Decide se vai ter informações do pokemon ou não
-            if(ControladoraFachadaSingleton.getInstance().getUsuario().getQuantidadeCapturas(pkmn) > 0) {
+            if(numPossuidos > 0) {
                 nomePokemon.setText(pkmn.getNome());
+                numeroPossuidos.setText("Qte: " + String.valueOf(numPossuidos));
 
                 //ajusta o visual do número acrescendo zeros ao lado
                 if(pkmn.getNumero() < 10)
@@ -90,4 +95,21 @@ public class AdapterTrocaPokemonsList extends BaseAdapter {
         }
     }
 
+    @Override
+    public boolean areAllItemsEnabled() {
+        return areAllEnabled;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return (position != selected) && areAllItemsEnabled();
+    }
+
+    public void setAreAllEnabled(boolean areAllEnabled) {
+        this.areAllEnabled = areAllEnabled;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
+    }
 }

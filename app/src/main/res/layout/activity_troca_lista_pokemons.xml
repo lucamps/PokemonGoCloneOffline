@@ -47,8 +47,16 @@
         android:layout_below="@id/barraVoltarTroca"
         android:gravity="center">
 
-
+        <ImageView
+            android:id="@+id/euAceitei"
+            android:layout_marginRight="20dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/checkbox_off_background"
+            android:layout_toLeftOf="@+id/Enviando"
+            />
         <TextView
+            android:id="@+id/Enviando"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enviando "/>
@@ -56,21 +64,31 @@
             android:id="@+id/meu_pokemon_selecionado"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/i42"
+            android:src="@android:drawable/alert_light_frame"
             />
         <ImageView
             android:id="@+id/outro_pokemon_selecionado"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:src="@drawable/i25"/>
+            android:src="@android:drawable/alert_light_frame"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""/>
         <TextView
+            android:id="@+id/Recebendo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Recebendo"/>
+        <ImageView
+            android:id="@+id/outroAceitou"
+            android:layout_marginLeft="10dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@android:drawable/checkbox_off_background"
+            android:layout_toRightOf="@+id/Recebendo"
+            />
 
     </LinearLayout>
 
