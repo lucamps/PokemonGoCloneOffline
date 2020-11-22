@@ -441,6 +441,7 @@ public final class BancoDadosSingleton {
                     "  latitude REAL NOT NULL," +
                     "  longitude REAL NOT NULL," +
                     "  dtCaptura TEXT NOT NULL," +
+                    "  foiTrocado BOOLEAN NOT NULL," +
                     "  PRIMARY KEY  (login,idPokemon,dtCaptura)," +
                     "  CONSTRAINT fk_usuariopokemon_login FOREIGN KEY (login) REFERENCES usuario (login)," +
                     "  CONSTRAINT fk_usuariopokemon_pokemon FOREIGN KEY (idPokemon) REFERENCES pokemon (idPokemon)" +

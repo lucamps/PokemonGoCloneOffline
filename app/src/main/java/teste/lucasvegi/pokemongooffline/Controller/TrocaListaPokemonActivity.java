@@ -60,7 +60,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
     private Pokemon ofertado = null;
     private Pokemon recebido = null;
-//    boolean pode_alterar_oferta = true;
+    //    boolean pode_alterar_oferta = true;
     private boolean outro_aceitou = false;
 
     private Button aceitar;
@@ -153,104 +153,109 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
     public void aceitarTroca(View v){
 
-        if(connectedThread != null){
-            byte data[] = "25".getBytes();
-            connectedThread.write(data);
-        }
+//        if(connectedThread != null){
+//            byte data[] = "25".getBytes();
+//            connectedThread.write(data);
+//        }
 
-//        if(ofertado == null) {
-//            Context context = getApplicationContext();
-//            CharSequence text = "Você não fazer uma troca sem ofertar algum Pokémon! Ofereça algum Pokémon da sua coleção.";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
-//            return;
-//        }
-//        if(recebido == null) {
-//            Context context = getApplicationContext();
-//            CharSequence text = "Você não fazer uma troca sem receber algum Pokémon! Espere o outro treinador fazer a oferta dele.";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
-//            return;
-//        }
-//
-//        if(outro_aceitou) {
-//            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//            Criteria criteria = new Criteria();
+        if(ofertado == null) {
+            Context context = getApplicationContext();
+            CharSequence text = "Você não fazer uma troca sem ofertar algum Pokémon! Ofereça algum Pokémon da sua coleção.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+        else if(recebido == null) {
+            Context context = getApplicationContext();
+            CharSequence text = "Você não fazer uma troca sem receber algum Pokémon! Espere o outro treinador fazer a oferta dele.";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
+            return;
+        }
+        else if(outro_aceitou) {
+            aceitar.setEnabled(false);
+            adapterPokedex.setAreAllEnabled(false);
+            euAceitei.setImageResource(android.R.drawable.checkbox_on_background);
+
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
 //            Context ctx = this;
-//
-//            PackageManager packageManager = getPackageManager();
-//            boolean hasGPS = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
-//
-//            if (hasGPS) {
-//                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-//                Log.i("LOCATION", "usando GPS");
-//            } else {
-//                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-//                Log.i("LOCATION", "usando WI-FI ou dados");
-//            }
-//
-//            String provider = lm.getBestProvider(criteria, true);
-//
-//            if (provider == null) {
-//                Log.e("TROCA", "Nenhum provedor encontrado");
-//
-//                Context context = getApplicationContext();
-//                CharSequence text = "Não pudemos obter sua posição geográfica. Tente novamente.";
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(context, text, duration);
-//                toast.show();
-//                return;
-//            } else {
-//                Log.i("TROCA", "Esta sendo utilizado o provedor " + provider);
-//
-//                lm.requestLocationUpdates(provider, 5000, 10, (LocationListener) ctx);
-////                lm.requestSingleUpdate(provider, , null );
-////                lm.requestSingleUpdate(provider, );
-//            }
-//
-//            double lat = lm.getLastKnownLocation(provider).getLatitude();
-//            double lon = lm.getLastKnownLocation(provider).getLongitude();
-//            Aparecimento ap = new Aparecimento();
-//            ap.setLatitude(lat); ap.setLongitude(lon);
-//            ap.setPokemon(recebido);
-////            ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
-//
-//            for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
-//                if(!capt.getFoiTrocado())
-//                    capt.setFoiTrocado(true);
-//            }
-//
-//            Context context = getApplicationContext();
-//            CharSequence text = "Troca realizada com sucesso!";
-//            int duration = Toast.LENGTH_SHORT;
-//
-//            Toast toast = Toast.makeText(context, text, duration);
-//            toast.show();
+
+            PackageManager packageManager = getPackageManager();
+            boolean hasGPS = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
+
+            if (hasGPS) {
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                Log.i("LOCATION", "usando GPS");
+            } else {
+                criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+                Log.i("LOCATION", "usando WI-FI ou dados");
+            }
+
+            String provider = lm.getBestProvider(criteria, true);
+
+            if (provider == null) {
+                Log.e("TROCA", "Nenhum provedor encontrado");
+
+                Context context = getApplicationContext();
+                CharSequence text = "Não pudemos obter sua posição geográfica. Tente novamente.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+                return;
+            } else {
+                Log.i("TROCA", "Esta sendo utilizado o provedor " + provider);
+
+            }
+
+            double lat = lm.getLastKnownLocation(provider).getLatitude();
+            double lon = lm.getLastKnownLocation(provider).getLongitude();
+            Aparecimento ap = new Aparecimento();
+            ap.setLatitude(lat); ap.setLongitude(lon);
+            ap.setPokemon(recebido);
+            ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
+
+            PokemonCapturado paraEditar;
+            for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
+                if(!capt.getFoiTrocado()) {
+                    capt.setFoiTrocado(true);
+                    paraEditar = capt;
+                    break;
+                }
+            }
+
+
+            Context context = getApplicationContext();
+//            CharSequence text = "Coords: " + String.valueOf(ap.getLatitude()) + " " + String.valueOf(ap.getLongitude());
+            CharSequence text = "Troca realizada com sucesso!";
+            int duration = Toast.LENGTH_SHORT;
+
+            Toast toast = Toast.makeText(context, text, duration);
+            toast.show();
 //            finish();
-//        }
-//        else {
-////            pode_alterar_oferta = false;
-//            aceitar.setEnabled(false);
-//            rejeitar.setEnabled(true);
-//            adapterPokedex.setAreAllEnabled(false);
-//            euAceitei.setImageResource(android.R.drawable.checkbox_on_background);
-//
-//        }
+        }
+        else {
+//            pode_alterar_oferta = false;
+            aceitar.setEnabled(false);
+            rejeitar.setEnabled(true);
+            adapterPokedex.setAreAllEnabled(false);
+            euAceitei.setImageResource(android.R.drawable.checkbox_on_background);
+
+        }
 
     }
 
     public void rejeitarTroca(View v){
-//        pode_alterar_oferta = true;
-//        aceitar.setEnabled(true);
-//        rejeitar.setEnabled(false);
-//        euAceitei.setImageResource(android.R.drawable.checkbox_off_background);
-//        adapterPokedex.setAreAllEnabled(true);
-//        adapterPokedex.notifyDataSetChanged();
+        aceitar.setEnabled(true);
+        rejeitar.setEnabled(false);
+        euAceitei.setImageResource(android.R.drawable.checkbox_off_background);
+        adapterPokedex.setAreAllEnabled(true);
+        adapterPokedex.notifyDataSetChanged();
     }
 
     public void clickVoltar(View v){
