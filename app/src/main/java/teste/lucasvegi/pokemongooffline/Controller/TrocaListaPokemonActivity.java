@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -37,6 +38,7 @@ import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.Model.Pokemon;
 import teste.lucasvegi.pokemongooffline.Model.PokemonCapturado;
 import teste.lucasvegi.pokemongooffline.R;
+import teste.lucasvegi.pokemongooffline.Util.BancoDadosSingleton;
 import teste.lucasvegi.pokemongooffline.Util.MyApp;
 import teste.lucasvegi.pokemongooffline.View.AdapterPokedex;
 import teste.lucasvegi.pokemongooffline.View.AdapterTrocaPokemonsList;
@@ -218,16 +220,34 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             Aparecimento ap = new Aparecimento();
             ap.setLatitude(lat); ap.setLongitude(lon);
             ap.setPokemon(recebido);
-            ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
+             ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
 
-            PokemonCapturado paraEditar;
+            PokemonCapturado paraEditar = null;
             for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
-                if(!capt.getFoiTrocado()) {
-                    capt.setFoiTrocado(true);
+                if(capt.getFoiTrocado() == 0) {
+                    capt.setFoiTrocado(1);
                     paraEditar = capt;
                     break;
                 }
             }
+
+            if(paraEditar != null) {
+                ContentValues valores = new ContentValues();
+                valores.put("login", ControladoraFachadaSingleton.getInstance().getUsuario().getLogin());
+                valores.put("idPokemon", ofertado.getNumero());
+                valores.put("dtCaptura", paraEditar.getDtCaptura());
+                valores.put("latitude", paraEditar.getLatitude());
+                valores.put("longitude", paraEditar.getLongitude());
+                valores.put("foiTrocado", 1);
+                String where = "login = " + ControladoraFachadaSingleton.getInstance().getUsuario().getLogin() + " AND " +
+                        "idPokemon = " + ofertado.getNumero() + " AND " +
+                        "dtCaptura = " + paraEditar.getDtCaptura() + " AND " +
+                        "latitude = " + paraEditar.getLatitude() + " AND " +
+                        "longitude = " + paraEditar.getLongitude() + " AND " +
+                        "foiTrocado = 0";
+                BancoDadosSingleton.getInstance().atualizar("pokemonusuario", valores, where);
+            }
+
 
 
             Context context = getApplicationContext();
