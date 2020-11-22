@@ -62,7 +62,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
         public static final int MESSAGE_WRITE = 1;
         public static final int MESSAGE_TOAST = 2;
     }
-    private static Handler handler = new Handler(new Handler.Callback() {
+    private final Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             switch (msg.what) {
@@ -77,6 +77,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     Toast.makeText(MyApp.getAppContext(), readMessage,
                             Toast.LENGTH_LONG).show();
+                    processMessage(readMessage);
                     return true;
                 case MessageConstants.MESSAGE_TOAST:
                     Toast.makeText(MyApp.getAppContext(), msg.getData().toString(),
@@ -93,6 +94,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     private Pokemon ofertado = null;
     private Pokemon recebido = null;
 //    boolean pode_alterar_oferta = true;
+    private boolean eu_aceitei = false;
     private boolean outro_aceitou = false;
 
     private Button aceitar;
@@ -165,16 +167,19 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             pokemon_selecionado.setImageResource(ofertado.getIcone());
             adapterPokedex.setSelected(position);
 
-            //teste, depois tirar
-            int pos2 = position+1;
-            if(pos2 > pokemons.size())
-                pos2=1;
-            recebido = (Pokemon) parent.getAdapter().getItem(pos2);
-            ImageView outroPoke = (ImageView) findViewById(R.id.outro_pokemon_selecionado);
-            outroPoke.setImageResource(recebido.getIcone());
+            byte[] msg = ("CHANGE " + Integer.toString(ofertado.getNumero())).getBytes();
+            connectedThread.write(msg);
 
-            outro_aceitou = true;
-            outroAceitou.setImageResource(android.R.drawable.checkbox_on_background);
+            //teste, depois tirar
+//            int pos2 = position+1;
+//            if(pos2 > pokemons.size())
+//                pos2=1;
+//            recebido = (Pokemon) parent.getAdapter().getItem(pos2);
+//            ImageView outroPoke = (ImageView) findViewById(R.id.outro_pokemon_selecionado);
+//            outroPoke.setImageResource(recebido.getIcone());
+//
+//            outro_aceitou = true;
+//            outroAceitou.setImageResource(android.R.drawable.checkbox_on_background);
             //end teste
 
         }catch (Exception e){
@@ -377,4 +382,25 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
         }
 
     }
+
+    public void processMessage(String msg){
+        String[] flags = msg.split(" ");
+
+        switch(flags[0]){
+            case "CHANGE":
+
+                Integer position = Integer.parseInt(flags[1]) - 1;
+
+                ofertado = (Pokemon) pokemons.get(position);
+
+                ImageView pokemon_selecionado = (ImageView) findViewById(R.id.outro_pokemon_selecionado);
+                pokemon_selecionado.setImageResource(ofertado.getIcone());
+
+                eu_aceitei = false;
+                outro_aceitou = false;
+
+                break;
+        }
+    }
+
 }
