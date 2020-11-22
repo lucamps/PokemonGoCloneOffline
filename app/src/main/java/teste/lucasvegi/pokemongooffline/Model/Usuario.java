@@ -179,7 +179,7 @@ public class Usuario {
             valores.put("dtCaptura", dtCap);
             valores.put("latitude", aparecimento.getLatitude());
             valores.put("longitude", aparecimento.getLongitude());
-            valores.put("foiTrocado", false);
+            valores.put("foiTrocado", 0);
 
             //Persiste captura no banco
             BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
@@ -225,7 +225,7 @@ public class Usuario {
             int ans = 0;
             if (pokemons.containsKey(pkmn)) {
                 for (PokemonCapturado capt: pokemons.get(pkmn)) {
-                    if (!capt.getFoiTrocado())
+                    if (capt.getFoiTrocado() == 0)
                         ans++;
                 }
                 return ans;
