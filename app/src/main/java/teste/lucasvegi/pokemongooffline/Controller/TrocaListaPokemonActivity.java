@@ -53,8 +53,40 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     private BluetoothDevice device;
     private BluetoothSocket socket;
     private ConnectedThread connectedThread;
+    private static final String TAG = "TROCA_POKEMON";
 
-    private Handler handler; // handler that gets info from Bluetooth service
+    // Defines several constants used when transmitting messages between the
+    // service and the UI.
+    private interface MessageConstants {
+        public static final int MESSAGE_READ = 0;
+        public static final int MESSAGE_WRITE = 1;
+        public static final int MESSAGE_TOAST = 2;
+    }
+    private static Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case MessageConstants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+                    return true;
+                case MessageConstants.MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    Toast.makeText(MyApp.getAppContext(), readMessage,
+                            Toast.LENGTH_LONG).show();
+                    return true;
+                case MessageConstants.MESSAGE_TOAST:
+                    Toast.makeText(MyApp.getAppContext(), msg.getData().toString(),
+                            Toast.LENGTH_SHORT).show();
+                    break;
+            }
+
+            return false;
+        }
+    });
 
     private ListView listView;
 
@@ -154,7 +186,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     public void aceitarTroca(View v){
 
         if(connectedThread != null){
-            byte data[] = "25".getBytes();
+            byte data[] = "Se isso aparecer. Sucesso!".getBytes();
             connectedThread.write(data);
         }
 
@@ -258,18 +290,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     }
 
 
-    private static final String TAG = "TROCA_POKEMON";
-
-    // Defines several constants used when transmitting messages between the
-    // service and the UI.
-    private interface MessageConstants {
-        public static final int MESSAGE_READ = 0;
-        public static final int MESSAGE_WRITE = 1;
-        public static final int MESSAGE_TOAST = 2;
-
-        // ... (Add other message types here as needed.)
-    }
-
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
@@ -328,11 +348,11 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
                 mmOutStream.write(bytes);
 
                 Log.e("TROCA", "Enviando: " + bytes.toString());
-
                 // Share the sent message with the UI activity.
                 Message writtenMsg = handler.obtainMessage(
                         MessageConstants.MESSAGE_WRITE, -1, -1, mmBuffer);
                 writtenMsg.sendToTarget();
+
             } catch (IOException e) {
                 Log.e(TAG, "Error occurred when sending data", e);
 
@@ -355,5 +375,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
                 Log.e(TAG, "Could not close the connect socket", e);
             }
         }
+
     }
 }
