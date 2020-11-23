@@ -73,15 +73,6 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         //bluetoothAdapter.startDiscovery();
     }
 
-    public void exchange(View v) {
-        try {
-            Intent it = new Intent(this, TrocaListaPokemonActivity.class);
-            startActivityForResult(it,PERFIL_TROCA);
-        } catch (Exception e){
-            Log.e("TROCA", "ERRO: " + e.getMessage());
-        }
-    }
-
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -175,14 +166,6 @@ public class TrocaListaUsuariosActivity extends Activity implements AdapterView.
         //Inicia uma nova
         connectThread = new ConnectThread(device);
         connectThread.start();
-
-//        String msg = device.getName() + " - " + device.getAddress();
-//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-//
-//        // Abre a tela do chat
-//        Intent intent = new Intent(this, TrocaListaPokemonActivity.class);
-//        intent.putExtra(BluetoothDevice.EXTRA_DEVICE, device);
-//        startActivity(intent);
 
     }
 
