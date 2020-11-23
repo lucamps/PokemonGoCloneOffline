@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.R;
 
 public final class BancoDadosSingleton {
@@ -447,6 +448,21 @@ public final class BancoDadosSingleton {
                     "  CONSTRAINT fk_usuariopokemon_pokemon FOREIGN KEY (idPokemon) REFERENCES pokemon (idPokemon)" +
                     ");"};
 
+    private static final String DATABASE_ALTER_TROCA = "ALTER TABLE pokemonusuario ADD COLUMN foiTrocado INTEGER DEFAULT 0";
+
+    private void updateTroca(String tabela) {
+        if(tabela == "pokemonusuario") {
+            Cursor c = db.rawQuery("SELECT * FROM " + tabela + " LIMIT 0", null);
+            if(c.getColumnIndex("foiTrocado") == -1) {
+                Log.d("TROCA", "Adicionando coluna na tabela...");
+                db.execSQL(DATABASE_ALTER_TROCA);
+                ContentValues valores = new ContentValues();
+                valores.put("foiTrocado", 0);
+                BancoDadosSingleton.getInstance().atualizar("pokemonusuario", valores, "");
+            }
+        }
+    }
+
     private BancoDadosSingleton() {
         Context ctx = MyApp.getAppContext();
         // Abre o banco de dados já existente ou então cria um banco novo
@@ -475,6 +491,9 @@ public final class BancoDadosSingleton {
 
     // Insere um novo registro
     public long inserir(String tabela, ContentValues valores) {
+        updateTroca(tabela);
+
+
         long id = db.insert(tabela, null, valores);
 
         Log.i("BANCO_DADOS", "Cadastrou registro com o id [" + id + "]");
@@ -483,6 +502,8 @@ public final class BancoDadosSingleton {
 
     // Atualiza registros
     public int atualizar(String tabela, ContentValues valores, String where) {
+        updateTroca(tabela);
+
         int count = db.update(tabela, valores, where, null);
 
         Log.i("BANCO_DADOS", "Atualizou [" + count + "] registros");
@@ -491,6 +512,7 @@ public final class BancoDadosSingleton {
 
     // Deleta registros
     public int deletar(String tabela, String where) {
+        updateTroca(tabela);
         int count = db.delete(tabela, where, null);
 
         Log.i("BANCO_DADOS", "Deletou [" + count + "] registros");
@@ -499,6 +521,8 @@ public final class BancoDadosSingleton {
 
     // Busca registros
     public Cursor buscar(String tabela, String colunas[], String where, String orderBy) {
+        updateTroca(tabela);
+
         Cursor c;
         if(!where.equals(""))
             c = db.query(tabela, colunas, where, null, null, null, orderBy);

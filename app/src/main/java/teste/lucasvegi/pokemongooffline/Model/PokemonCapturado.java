@@ -7,7 +7,7 @@ public class PokemonCapturado {
     private double latitude;
     private double longitude;
     private String dtCaptura;
-    private int foiTrocado = 0;
+    private int foiTrocado;
 
     public double getLatitude() {
         return latitude;
