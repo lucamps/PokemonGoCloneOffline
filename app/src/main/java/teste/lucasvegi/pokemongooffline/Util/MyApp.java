@@ -34,30 +34,4 @@ public class MyApp extends Application {
     public static void setBluetoothSocket(BluetoothSocket socket){
         MyApp.bluetoothSocket = socket;
     }
-
-    public static void setPokemon(int id) {
-
-        // Criando stream de dados para o socket(host, port) em @param bluetoothSocket
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(bluetoothSocket.getOutputStream());
-            out.writeInt(id);
-        } catch (Exception e) {
-            Log.e("SOCKET", "Falha ao enviar o pokémon");
-        }
-
-    }
-    public static int getPokemon() {
-
-        // Recebendo o stream de dados
-        try {
-            ObjectInputStream out = new ObjectInputStream(bluetoothSocket.getInputStream());
-            int id = out.readInt();
-            return id;
-        } catch (Exception e) {
-            Log.e("SOCKET", "Falha ao receber o pokémon");
-        }
-
-        return -1;
-    }
-
 }
