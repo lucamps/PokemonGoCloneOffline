@@ -442,20 +442,20 @@ public final class BancoDadosSingleton {
                     "  latitude REAL NOT NULL," +
                     "  longitude REAL NOT NULL," +
                     "  dtCaptura TEXT NOT NULL," +
-                    "  foiTrocado INTEGER NOT NULL," +
+                    "  foiTrocado INTEGER NOT NULL DEFAULT 0," +
                     "  PRIMARY KEY  (login,idPokemon,dtCaptura)," +
                     "  CONSTRAINT fk_usuariopokemon_login FOREIGN KEY (login) REFERENCES usuario (login)," +
                     "  CONSTRAINT fk_usuariopokemon_pokemon FOREIGN KEY (idPokemon) REFERENCES pokemon (idPokemon)" +
                     ");"};
 
-    private static final String DATABASE_ALTER_TROCA = "ALTER TABLE pokemonusuario ADD COLUMN foiTrocado INTEGER DEFAULT 0";
+    //private static final String DATABASE_ALTER_TROCA = "ALTER TABLE pokemonusuario ADD COLUMN foiTrocado INTEGER DEFAULT 0";
 
     private void updateTroca(String tabela) {
         if(tabela == "pokemonusuario") {
             Cursor c = db.rawQuery("SELECT * FROM " + tabela + " LIMIT 0", null);
             if(c.getColumnIndex("foiTrocado") == -1) {
                 Log.d("TROCA", "Adicionando coluna na tabela...");
-                db.execSQL(DATABASE_ALTER_TROCA);
+                //db.execSQL(DATABASE_ALTER_TROCA);
                 ContentValues valores = new ContentValues();
                 valores.put("foiTrocado", 0);
                 BancoDadosSingleton.getInstance().atualizar("pokemonusuario", valores, "");

@@ -228,8 +228,39 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
         adapterPokedex.setAreAllEnabled(false);
         euAceitei.setImageResource(android.R.drawable.checkbox_on_background);
 
+        byte[] msg = "ACCEPT".getBytes();
+        connectedThread.write(msg);
+
         if(outro_aceitou) {
             fazTroca();
+        }
+    }
+
+    public void rejeitarTroca(View v){
+        //pode_alterar_oferta = true;
+        rejeitarTroca(true);
+    }
+
+    public void rejeitarTroca(boolean sendMsg){
+        eu_aceitei = false;
+        outro_aceitou = false;
+        aceitar.setEnabled(true);
+        rejeitar.setEnabled(false);
+        euAceitei.setImageResource(android.R.drawable.checkbox_off_background);
+        outroAceitou.setImageResource(android.R.drawable.checkbox_off_background);
+        adapterPokedex.setAreAllEnabled(true);
+        adapterPokedex.notifyDataSetChanged();
+
+        if(sendMsg) {
+            byte[] msg = "REJECT".getBytes();
+            connectedThread.write(msg);
+        }
+    }
+
+    public void fazTroca(){
+        if(eu_aceitei && outro_aceitou){
+            Toast.makeText(this, "O outro aceitou!", Toast.LENGTH_LONG);
+
             LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
 //            Context ctx = this;
@@ -267,7 +298,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
             Aparecimento ap = new Aparecimento();
             ap.setLatitude(lat); ap.setLongitude(lon);
             ap.setPokemon(recebido);
-             ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
+            ControladoraFachadaSingleton.getInstance().getUsuario().capturar(ap);
 
             PokemonCapturado paraEditar = null;
             for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
@@ -310,39 +341,10 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             Toast toast = Toast.makeText(context, text, duration);
             toast.show();
-//            finish();
+            finish();
         }
-        else {
-//            pode_alterar_oferta = false;
-            byte[] msg = "ACCEPT".getBytes();
-            connectedThread.write(msg);
-        }
-    }
-
-    public void rejeitarTroca(View v){
-        //pode_alterar_oferta = true;
-        rejeitarTroca(true);
-    }
-
-    public void rejeitarTroca(boolean sendMsg){
-        eu_aceitei = false;
-        outro_aceitou = false;
-        aceitar.setEnabled(true);
-        rejeitar.setEnabled(false);
-        euAceitei.setImageResource(android.R.drawable.checkbox_off_background);
-        outroAceitou.setImageResource(android.R.drawable.checkbox_off_background);
-        adapterPokedex.setAreAllEnabled(true);
-        adapterPokedex.notifyDataSetChanged();
-
-        if(sendMsg) {
-            byte[] msg = "REJECT".getBytes();
-            connectedThread.write(msg);
-        }
-    }
-
-    public void fazTroca(){
-        if(eu_aceitei && outro_aceitou){
-            Toast.makeText(this, "O outro aceitou!", Toast.LENGTH_LONG);
+        else{
+            rejeitarTroca(false);
         }
     }
 
