@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -233,19 +234,25 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             if(paraEditar != null) {
                 ContentValues valores = new ContentValues();
-                valores.put("login", ControladoraFachadaSingleton.getInstance().getUsuario().getLogin());
-                valores.put("idPokemon", ofertado.getNumero());
-                valores.put("dtCaptura", paraEditar.getDtCaptura());
-                valores.put("latitude", paraEditar.getLatitude());
-                valores.put("longitude", paraEditar.getLongitude());
+//                valores.put("login", ControladoraFachadaSingleton.getInstance().getUsuario().getLogin());
+//                valores.put("idPokemon", ofertado.getNumero());
+//                valores.put("dtCaptura", paraEditar.getDtCaptura());
+//                valores.put("latitude", paraEditar.getLatitude());
+//                valores.put("longitude", paraEditar.getLongitude());
                 valores.put("foiTrocado", 1);
-                String where = "login = " + ControladoraFachadaSingleton.getInstance().getUsuario().getLogin() + " AND " +
-                        "idPokemon = " + ofertado.getNumero() + " AND " +
-                        "dtCaptura = " + paraEditar.getDtCaptura() + " AND " +
-                        "latitude = " + paraEditar.getLatitude() + " AND " +
-                        "longitude = " + paraEditar.getLongitude() + " AND " +
-                        "foiTrocado = 0";
+                String where = "login = '" + ControladoraFachadaSingleton.getInstance().getUsuario().getLogin() + "' AND " +
+                        "idPokemon = " + String.valueOf(ofertado.getNumero()) + " AND " +
+                        "dtCaptura = '" + paraEditar.getDtCaptura() + "'";
                 BancoDadosSingleton.getInstance().atualizar("pokemonusuario", valores, where);
+
+                Log.d("TROCA", "Removendo");
+
+                //teste
+//                where.replace("foiTrocado = 0", "foitrocado = 1");
+//                Cursor c = BancoDadosSingleton.getInstance().buscar("pokemonusuario", new String[]{"foiTrocado"}, "idPokemon = " + String.valueOf(ofertado.getNumero()), null);
+//                while(c.moveToNext())
+//                    Log.d("TROCA", String.valueOf(c.getInt( c.getColumnIndex("foiTrocado"))));
+                //endteste
             }
 
 
