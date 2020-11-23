@@ -96,7 +96,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
     private Pokemon ofertado = null;
     private Pokemon recebido = null;
-//    boolean pode_alterar_oferta = true;
     private boolean eu_aceitei = false;
     private boolean outro_aceitou = false;
 
@@ -152,16 +151,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         try {
-//            if(!pode_alterar_oferta) {
-//                Context context = getApplicationContext();
-//                CharSequence text = "Você não pode trocar o Pokémon que está oferecendo! Aperte Rejeitar para trocar sua oferta.";
-//                int duration = Toast.LENGTH_SHORT;
-//
-//                Toast toast = Toast.makeText(context, text, duration);
-//                toast.show();
-//
-//                return;
-//            }
 
             //Click em um item da listView customizada
             ofertado = (Pokemon) parent.getAdapter().getItem(position);
@@ -175,18 +164,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             rejeitarTroca(false);
 
-            //teste, depois tirar
-//            int pos2 = position+1;
-//            if(pos2 > pokemons.size())
-//                pos2=1;
-//            recebido = (Pokemon) parent.getAdapter().getItem(pos2);
-//            ImageView outroPoke = (ImageView) findViewById(R.id.outro_pokemon_selecionado);
-//            outroPoke.setImageResource(recebido.getIcone());
-//
-//            outro_aceitou = true;
-//            outroAceitou.setImageResource(android.R.drawable.checkbox_on_background);
-            //end teste
-
         }catch (Exception e){
             Log.e("POKEDEX", "ERRO no click: " + e.getMessage());
         }
@@ -196,11 +173,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     public void aceitarTroca(View v){
         aceitarTroca();
     }
-
-//        if(connectedThread != null){
-//            byte data[] = "25".getBytes();
-//            connectedThread.write(data);
-//        }
 
     public void aceitarTroca(){
         if(ofertado == null) {
@@ -237,7 +209,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
     }
 
     public void rejeitarTroca(View v){
-        //pode_alterar_oferta = true;
         rejeitarTroca(true);
     }
 
@@ -263,7 +234,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
-//            Context ctx = this;
 
             PackageManager packageManager = getPackageManager();
             boolean hasGPS = packageManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
@@ -311,11 +281,6 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             if(paraEditar != null) {
                 ContentValues valores = new ContentValues();
-//                valores.put("login", ControladoraFachadaSingleton.getInstance().getUsuario().getLogin());
-//                valores.put("idPokemon", ofertado.getNumero());
-//                valores.put("dtCaptura", paraEditar.getDtCaptura());
-//                valores.put("latitude", paraEditar.getLatitude());
-//                valores.put("longitude", paraEditar.getLongitude());
                 valores.put("foiTrocado", 1);
                 String where = "login = '" + ControladoraFachadaSingleton.getInstance().getUsuario().getLogin() + "' AND " +
                         "idPokemon = " + String.valueOf(ofertado.getNumero()) + " AND " +
@@ -323,19 +288,11 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
                 BancoDadosSingleton.getInstance().atualizar("pokemonusuario", valores, where);
 
                 Log.d("TROCA", "Removendo");
-
-                //teste
-//                where.replace("foiTrocado = 0", "foitrocado = 1");
-//                Cursor c = BancoDadosSingleton.getInstance().buscar("pokemonusuario", new String[]{"foiTrocado"}, "idPokemon = " + String.valueOf(ofertado.getNumero()), null);
-//                while(c.moveToNext())
-//                    Log.d("TROCA", String.valueOf(c.getInt( c.getColumnIndex("foiTrocado"))));
-                //endteste
             }
 
 
 
             Context context = getApplicationContext();
-//            CharSequence text = "Coords: " + String.valueOf(ap.getLatitude()) + " " + String.valueOf(ap.getLongitude());
             CharSequence text = "Troca realizada com sucesso!";
             int duration = Toast.LENGTH_SHORT;
 
