@@ -42,7 +42,39 @@ public final class ControladoraFachadaSingleton {
     private boolean sorteouLendario = false;
     private List<Ovo> ovos;
 
+
+    private List<Doce> doces;
+
+    private void daoDoce(){
+        this.doces = new ArrayList<Doce>();
+
+        Cursor c = BancoDadosSingleton.getInstance().buscar("doce",new String[]{"idDoce","nome","quant"},"","");
+
+        while(c.moveToNext()){
+            int idD = c.getColumnIndex("idDoce");
+            int nome = c.getColumnIndex("nome");
+            int quant = c.getColumnIndex("quant");
+
+            Doce d = new Doce();
+            d.setIdDoce(c.getInt(idD));
+            d.setNomePkm(c.getString(nome));
+            d.setQuantidade(c.getInt(quant));
+
+            this.doces.add(d);
+        }
+
+        c.close();
+
+        //TODO: apagar testes de impressão doce
+
+        //IMPRIME DE TESTE
+        for (Doce d : doces){
+            Log.d("DOCES",d.getNomePkm() + ": " + d.getQuantidade());
+        }
+    }
+
     private ControladoraFachadaSingleton() {
+        daoDoce();
         daoTipo();
         daoPokemons(this);
         daoOvo();
@@ -98,7 +130,7 @@ public final class ControladoraFachadaSingleton {
     private void daoPokemons(ControladoraFachadaSingleton controladorGeral){
         pokemons = new HashMap<String,List<Pokemon>>();
 
-        Cursor c = BancoDadosSingleton.getInstance().buscar("pokemon",new String[]{"idPokemon","nome","categoria","foto","icone"},"","");
+        Cursor c = BancoDadosSingleton.getInstance().buscar("pokemon",new String[]{"idPokemon","nome","categoria","foto","icone","idDoce","idPokemonBase"},"","");
 
         while(c.moveToNext()){
             int idP = c.getColumnIndex("idPokemon");
@@ -106,8 +138,10 @@ public final class ControladoraFachadaSingleton {
             int cat = c.getColumnIndex("categoria");
             int foto = c.getColumnIndex("foto");
             int icone = c.getColumnIndex("icone");
+            int idDoce = c.getColumnIndex("idDoce");
+            int idPokemonBase = c.getColumnIndex("idPokemonBase");
 
-            Pokemon p = new Pokemon(c.getInt(idP),c.getString(name),c.getString(cat),c.getInt(foto),c.getInt(icone),controladorGeral);
+            Pokemon p = new Pokemon(c.getInt(idP),c.getString(name),c.getString(cat),c.getInt(foto),c.getInt(icone),c.getInt(idDoce), c.getInt(idPokemonBase),controladorGeral);
 
             //verifica se lista de alguma categoria ainda não existe
             if(pokemons.get(p.getCategoria()) == null)
@@ -402,6 +436,10 @@ public final class ControladoraFachadaSingleton {
         return tiposPokemon;
     }
 
+    public List<Doce> getDoces() {
+        return doces;
+    }
+
     public List<Ovo> getOvos(){ return ovos; }
 
     public void removeOvo(int i){
@@ -411,15 +449,17 @@ public final class ControladoraFachadaSingleton {
 
     public Pokemon getPokemonOvo(int idOvo){
         Pokemon p = null;
-        Cursor c = BancoDadosSingleton.getInstance().buscar("pokemon p, ovo o",new String[]{"p.idPokemon idPokemon","p.nome nome","p.categoria categoria","p.foto foto","p.icone icone"},"o.idPokemon = p.idPokemon AND o.idOvo = '"+idOvo+"'","");
+        Cursor c = BancoDadosSingleton.getInstance().buscar("pokemon p, ovo o",new String[]{"p.idPokemon idPokemon","p.nome nome","p.categoria categoria","p.foto foto","p.icone icone","p.idDoce idDoce", "p.idPokemonBase idPokemonBase"},"o.idPokemon = p.idPokemon AND o.idOvo = '"+idOvo+"'","");
         while (c.moveToNext()) {
             int idP = c.getColumnIndex("idPokemon");
             int name = c.getColumnIndex("nome");
             int cat = c.getColumnIndex("categoria");
             int foto = c.getColumnIndex("foto");
             int icone = c.getColumnIndex("icone");
+            int idDoce = c.getColumnIndex("idDoce");
+            int idPokemonBase = c.getColumnIndex("idPokemonBase");
 
-            p = new Pokemon(c.getInt(idP),c.getString(name),c.getString(cat),c.getInt(foto),c.getInt(icone),this);
+            p = new Pokemon(c.getInt(idP),c.getString(name),c.getString(cat),c.getInt(foto),c.getInt(icone),c.getInt(idDoce),c.getInt(idPokemonBase),this);
             Log.i("GET", "Nome: " + p.getNome());
 
         }
