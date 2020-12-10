@@ -6,6 +6,7 @@ import android.location.Location;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class Usuario {
 
             //Select p.idPokemon idPokemon, pu.latitude latitude, pu.longitude longitude, pu.dtCaptura dtCaptura from pokemon p, usuario u, pokemonusuario pu where p.idPokemon = pu.idPokemon and u.login = pu.login and u.login = login
             Cursor cPkmn = BancoDadosSingleton.getInstance().buscar("pokemon p, usuario u, pokemonusuario pu",
-                    new String[]{"p.idPokemon idPokemon", "pu.latitude latitude", "pu.longitude longitude", "pu.dtCaptura dtCaptura"},
+                    new String[]{"p.idPokemon idPokemon", "pu.latitude latitude", "pu.longitude longitude", "pu.dtCaptura dtCaptura", "pu.foiTrocado foiTrocado"},
                     "p.idPokemon = pu.idPokemon and u.login = pu.login and u.login = '" + this.login + "'",
                     "p.idPokemon asc");
 
@@ -127,6 +128,7 @@ public class Usuario {
                 int lat = cPkmn.getColumnIndex("latitude");
                 int longi = cPkmn.getColumnIndex("longitude");
                 int dtCaptura = cPkmn.getColumnIndex("dtCaptura");
+                int foiTrocado = cPkmn.getColumnIndex("foiTrocado");
 
                 //procura o pokemon retornado do banco na lista de pokemons da controladora geral
                 for (Pokemon pokemon : listPkmn) {
@@ -137,6 +139,7 @@ public class Usuario {
                         pc.setLatitude(cPkmn.getDouble(lat));
                         pc.setLongitude(cPkmn.getDouble(longi));
                         pc.setDtCaptura(cPkmn.getString(dtCaptura));
+                        pc.setFoiTrocado(cPkmn.getInt(foiTrocado));
 
                         //verifica se lista de algum pokemon ainda não existe
                         if(pokemons.get(pokemon) == null) {
@@ -205,6 +208,7 @@ public class Usuario {
             valores.put("latitude", aparecimento.getLatitude());
             valores.put("longitude", aparecimento.getLongitude());
             valores.put("evoluido",0);
+            valores.put("foiTrocado", 0);
 
             //Persiste captura no banco
             BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
@@ -239,11 +243,27 @@ public class Usuario {
         }
     }
 
-    public int getQuantidadeCapturas(Pokemon pkmn){
-        if(pokemons.containsKey(pkmn)){
-            return pokemons.get(pkmn).size();
+    public int getQuantidadeCapturas(Pokemon pkmn, boolean pegarTrocados){
+        if(pegarTrocados) {
+            if (pokemons.containsKey(pkmn)) {
+                return pokemons.get(pkmn).size();
+            }
+        } else {
+            if(pkmn == null) return 0;
+            int ans = 0;
+            if (pokemons.containsKey(pkmn)) {
+                for (PokemonCapturado capt: pokemons.get(pkmn)) {
+                    if (capt.getFoiTrocado() == 0)
+                        ans++;
+                }
+                return ans;
+            }
         }
         return 0;
+    }
+
+    public int getQuantidadeCapturas(Pokemon pkmn){
+        return getQuantidadeCapturas(pkmn, true);
     }
 
     public void Chocar(Location location, int idOvo){

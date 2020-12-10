@@ -149,13 +149,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="Trocar Pokémon"
+                android:id="@+id/buttonTroca"
+                android:background="@drawable/botao_style"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/txtNumCapturasPerfil"
+                android:onClick="clickTroca"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="Logout"
                 android:id="@+id/button"
                 android:background="@drawable/botao_style"
                 android:textStyle="bold"
                 android:textColor="#FFFFFF"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/txtNumCapturasPerfil"
+                android:layout_below="@+id/buttonTroca"
                 android:onClick="clickLogout"/>
 
         </RelativeLayout>

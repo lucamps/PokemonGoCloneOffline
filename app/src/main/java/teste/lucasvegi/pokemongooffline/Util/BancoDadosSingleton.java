@@ -11,6 +11,7 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 
+import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.R;
 
 public final class BancoDadosSingleton {
@@ -537,6 +538,7 @@ public final class BancoDadosSingleton {
                     "  latitude REAL NOT NULL," +
                     "  longitude REAL NOT NULL," +
                     "  dtCaptura TEXT NOT NULL," +
+                    "  foiTrocado INTEGER NOT NULL DEFAULT 0," +
                     "  evoluido INTEGER NOT NULL," +
                     "  PRIMARY KEY  (login,idPokemon,dtCaptura)," +
                     "  CONSTRAINT fk_usuariopokemon_login FOREIGN KEY (login) REFERENCES usuario (login)," +
