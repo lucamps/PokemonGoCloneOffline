@@ -210,7 +210,7 @@ public class DetalhesPokedexActivity extends Activity implements LocationListene
         // Evoluindo pokemon caso exista pokemon disponível
         else if (pkmn.estaDisponivel(true)){ // Se isso ocorre, já atualizamos a flag 'estaBloqueado' da tabela pokemonusuario no Banco
             evoluir();
-            ControladoraFachadaSingleton.getInstance().aumentaXp("evolui");   //atualiza XP do usuário após uma captura
+            ControladoraFachadaSingleton.getInstance().aumentaXp("evolui");   //atualiza XP do usuário após evoluir um Pokemon
         }
 
         // Se não há pokemon disponível, informamos issso via Toast
