@@ -281,7 +281,7 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             if(paraEditar != null) {
                 ContentValues valores = new ContentValues();
-                valores.put("foiTrocado", 1);
+                valores.put("estaBloqueado", 1);
                 String where = "login = '" + ControladoraFachadaSingleton.getInstance().getUsuario().getLogin() + "' AND " +
                         "idPokemon = " + String.valueOf(ofertado.getNumero()) + " AND " +
                         "dtCaptura = '" + paraEditar.getDtCaptura() + "'";
