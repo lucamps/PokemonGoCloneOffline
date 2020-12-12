@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import teste.lucasvegi.pokemongooffline.Util.BancoDadosSingleton;
+import teste.lucasvegi.pokemongooffline.Util.MyApp;
 import teste.lucasvegi.pokemongooffline.Util.TimeUtil;
 
 /**
@@ -307,6 +309,8 @@ public class Usuario {
 
             //adiciona o pokemon na lista da sua especie
             pokemons.get(pkmnAux).add(pc);
+
+            ControladoraFachadaSingleton.getInstance().aumentaXp("choca");   //atualiza XP do usuário ao chocar um ovo
 
         }catch (Exception e){
             Log.e("CHOCAR", "ERRO: " + e.getMessage());

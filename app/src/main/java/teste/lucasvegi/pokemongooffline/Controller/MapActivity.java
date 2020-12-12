@@ -397,6 +397,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, G
                 LastPkstopMarker = marker;
                 it.putExtra("foto", byteArray);
                 it.putExtra("pokestop", pokestop);
+                ControladoraFachadaSingleton.getInstance().aumentaXp("pokestop");   //atualiza XP do usuário após entrar na pokestop
                 startActivity(it);
             }
         }

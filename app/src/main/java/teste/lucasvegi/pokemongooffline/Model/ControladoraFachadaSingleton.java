@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
@@ -825,6 +826,9 @@ public final class ControladoraFachadaSingleton {
         valores.put("xp", xpFinal);
 
         int count = BancoDadosSingleton.getInstance().atualizar("usuario", valores, "login='"+getUsuario().getLogin()+"'");
+
+        if(count == 1)
+            Toast.makeText(MyApp.getAppContext(),"Você ganhou " + xpRecebido + " de XP",Toast.LENGTH_SHORT).show();
 
         return count == 1;
     }
