@@ -208,13 +208,15 @@ public class DetalhesPokedexActivity extends Activity implements LocationListene
         }
 
         // Evoluindo pokemon caso exista pokemon disponível
-        else if (pkmn.estaDisponivel(true)){ // Se isso ocorre, já atualizamos o atributo 'evoluido' da tabela pokemonusuario no Banco
+        else if (pkmn.estaDisponivel(true)){ // Se isso ocorre, já atualizamos a flag 'estaBloqueado' da tabela pokemonusuario no Banco
             evoluir();
+            //TODO: atribuir XP para evolução (como internamente estamos realizando uma captura,
+            // há a possibilidade de algum XP já estar sendo atribuído neste processo)
         }
 
         // Se não há pokemon disponível, informamos issso via Toast
         else{
-            Toast.makeText(getBaseContext(),"Todos os Pokemons de nome " + pkmn.getNome() + " já estão evoluidos!",Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(),"Não há Pokemons de nome " + pkmn.getNome() + " disponíveis para evolução!",Toast.LENGTH_LONG).show();
         }
     }
 

@@ -153,7 +153,7 @@ public class Pokemon implements Serializable{
         return evolucao;
     }
 
-    public boolean estaDisponivel(boolean atualizarFlagEvoluido){
+    public boolean estaDisponivel(boolean atualizarFlagBloqueado){
         // SELECT pu.login login, pu.idPokemon idPokemon, pu.latitude latitude,pu.longitude longitude,pu.dtCaptura dtCaptura
         // FROM pokemon p, pokemonusuario pu
         // WHERE pu.estaBloqueado = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = this.numero
@@ -168,8 +168,8 @@ public class Pokemon implements Serializable{
             return false;
         }
 
-        // Atualizando a flag evoluido para true
-        if(atualizarFlagEvoluido) {
+        // Atualizando a flag estaBloqueado para true
+        if(atualizarFlagBloqueado) {
             int login = c.getColumnIndex("login");
             int idPokemon = c.getColumnIndex("idPokemon");
             int latitude = c.getColumnIndex("latitude");
