@@ -272,8 +272,8 @@ public class TrocaListaPokemonActivity extends Activity implements AdapterView.O
 
             PokemonCapturado paraEditar = null;
             for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(ofertado) ) {
-                if(capt.getFoiTrocado() == 0) {
-                    capt.setFoiTrocado(1);
+                if(capt.getEstaBloqueado() == 0) {
+                    capt.setEstaBloqueado(1);
                     paraEditar = capt;
                     break;
                 }

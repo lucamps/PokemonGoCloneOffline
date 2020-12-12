@@ -156,11 +156,11 @@ public class Pokemon implements Serializable{
     public boolean estaDisponivel(boolean atualizarFlagEvoluido){
         // SELECT pu.login login, pu.idPokemon idPokemon, pu.latitude latitude,pu.longitude longitude,pu.dtCaptura dtCaptura
         // FROM pokemon p, pokemonusuario pu
-        // WHERE pu.evoluido = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = this.numero
+        // WHERE pu.estaBloqueado = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = this.numero
         Cursor c = BancoDadosSingleton.getInstance().buscar("pokemon p, pokemonusuario pu",
                 new String[]{"pu.login login", "pu.idPokemon idPokemon", "pu.latitude latitude",
                         "pu.longitude longitude","pu.dtCaptura dtCaptura" },
-                "pu.evoluido = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = " + this.numero, "");
+                "pu.estaBloqueado = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = " + this.numero, "");
 
         //Se a busca não encontrar nada, retorna false
         if(!c.moveToNext()){
@@ -183,7 +183,7 @@ public class Pokemon implements Serializable{
             valores.put("latitude", c.getDouble(latitude));
             valores.put("longitude", c.getDouble(longitude));
             valores.put("dtCaptura", c.getString(dtCaptura));
-            valores.put("evoluido", 1);
+            valores.put("estaBloqueado", 1);
 
             //Atualiza o banco
             BancoDadosSingleton.getInstance().atualizar("pokemonusuario",valores,"login = '" + c.getString(login) +

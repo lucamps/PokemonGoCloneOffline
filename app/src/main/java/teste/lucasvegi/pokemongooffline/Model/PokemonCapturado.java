@@ -9,7 +9,7 @@ public class PokemonCapturado {
     private double latitude;
     private double longitude;
     private String dtCaptura;
-    private int foiTrocado;
+    private int estaBloqueado;
 
     protected PokemonCapturado(double latitude, double longitude, String dtCaptura){
         this.latitude = latitude;
@@ -44,11 +44,11 @@ public class PokemonCapturado {
         this.dtCaptura = dtCaptura;
     }
 
-    public int getFoiTrocado() {
-        return foiTrocado;
+    public int getEstaBloqueado() {
+        return estaBloqueado;
     }
 
-    public void setFoiTrocado(int foiTrocado) {
-        this.foiTrocado = foiTrocado;
+    public void setEstaBloqueado(int estaBloqueado) {
+        this.estaBloqueado = estaBloqueado;
     }
 }

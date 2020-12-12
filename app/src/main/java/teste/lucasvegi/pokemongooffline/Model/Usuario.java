@@ -115,7 +115,7 @@ public class Usuario {
 
             //Select p.idPokemon idPokemon, pu.latitude latitude, pu.longitude longitude, pu.dtCaptura dtCaptura from pokemon p, usuario u, pokemonusuario pu where p.idPokemon = pu.idPokemon and u.login = pu.login and u.login = login
             Cursor cPkmn = BancoDadosSingleton.getInstance().buscar("pokemon p, usuario u, pokemonusuario pu",
-                    new String[]{"p.idPokemon idPokemon", "pu.latitude latitude", "pu.longitude longitude", "pu.dtCaptura dtCaptura", "pu.foiTrocado foiTrocado"},
+                    new String[]{"p.idPokemon idPokemon", "pu.latitude latitude", "pu.longitude longitude", "pu.dtCaptura dtCaptura", "pu.estaBloqueado estaBloqueado"},
                     "p.idPokemon = pu.idPokemon and u.login = pu.login and u.login = '" + this.login + "'",
                     "p.idPokemon asc");
 
@@ -128,7 +128,7 @@ public class Usuario {
                 int lat = cPkmn.getColumnIndex("latitude");
                 int longi = cPkmn.getColumnIndex("longitude");
                 int dtCaptura = cPkmn.getColumnIndex("dtCaptura");
-                int foiTrocado = cPkmn.getColumnIndex("foiTrocado");
+                int estaBloqueado = cPkmn.getColumnIndex("estaBloqueado");
 
                 //procura o pokemon retornado do banco na lista de pokemons da controladora geral
                 for (Pokemon pokemon : listPkmn) {
@@ -139,7 +139,7 @@ public class Usuario {
                         pc.setLatitude(cPkmn.getDouble(lat));
                         pc.setLongitude(cPkmn.getDouble(longi));
                         pc.setDtCaptura(cPkmn.getString(dtCaptura));
-                        pc.setFoiTrocado(cPkmn.getInt(foiTrocado));
+                        pc.setEstaBloqueado(cPkmn.getInt(estaBloqueado));
 
                         //verifica se lista de algum pokemon ainda não existe
                         if(pokemons.get(pokemon) == null) {
@@ -207,8 +207,7 @@ public class Usuario {
             valores.put("dtCaptura", dtCap);
             valores.put("latitude", aparecimento.getLatitude());
             valores.put("longitude", aparecimento.getLongitude());
-            valores.put("evoluido",0);
-            valores.put("foiTrocado", 0);
+            valores.put("estaBloqueado",0);
 
             //Persiste captura no banco
             BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
@@ -253,7 +252,7 @@ public class Usuario {
             int ans = 0;
             if (pokemons.containsKey(pkmn)) {
                 for (PokemonCapturado capt: pokemons.get(pkmn)) {
-                    if (capt.getFoiTrocado() == 0)
+                    if (capt.getEstaBloqueado() == 0)
                         ans++;
                 }
                 return ans;
@@ -284,7 +283,7 @@ public class Usuario {
             valores.put("dtCaptura", dtCap);
             valores.put("latitude", location.getLatitude());
             valores.put("longitude", location.getLongitude());
-            valores.put("evoluido",0);
+            valores.put("estaBloqueado",0);
 
             //Persiste captura no banco
             BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
