@@ -827,8 +827,13 @@ public final class ControladoraFachadaSingleton {
 
         int count = BancoDadosSingleton.getInstance().atualizar("usuario", valores, "login='"+getUsuario().getLogin()+"'");
 
-        if(count == 1)
-            Toast.makeText(MyApp.getAppContext(),"Você ganhou " + xpRecebido + " de XP",Toast.LENGTH_SHORT).show();
+        if(count == 1) {
+            Toast.makeText(MyApp.getAppContext(), "Você ganhou " + xpRecebido + " de XP", Toast.LENGTH_SHORT).show();
+
+            if(nivelFinal > nivelAtual) {
+                Toast.makeText(MyApp.getAppContext(), "Parabéns! Você avançou para o nível " + nivelFinal, Toast.LENGTH_SHORT).show();
+            }
+        }
 
         return count == 1;
     }
