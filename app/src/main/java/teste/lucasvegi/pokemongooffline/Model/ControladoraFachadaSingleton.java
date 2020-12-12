@@ -41,7 +41,7 @@ public final class ControladoraFachadaSingleton {
     private List<Tipo> tiposPokemon;
     private static ControladoraFachadaSingleton INSTANCE = new ControladoraFachadaSingleton();
     private boolean sorteouLendario = false;
-    private List<Ovo> ovos;
+    private List<Ovo> ovos = new ArrayList<>();
 
 
     private List<Doce> doces;
@@ -82,7 +82,7 @@ public final class ControladoraFachadaSingleton {
     }
 
     private void daoOvo(){
-        this.ovos = new ArrayList<>();
+        this.ovos.clear();
 
         Cursor c = BancoDadosSingleton.getInstance().buscar("ovo",new String[]{"idOvo","idPokemon","idTipoOvo","incubado","chocado","exibido","KmAndado"},"exibido = 0","");
 
@@ -512,16 +512,7 @@ public final class ControladoraFachadaSingleton {
         int tamRaro = pokemons.get("R").size();
         int tamLendario = pokemons.get("L").size();
 
-        //TO DO: idOvo precisa ser definido de alguma forma dentro deste método
-        int idOvo = 0;
-
-        //Monkey patch para definir id imitando autoincrement
-        Cursor c = BancoDadosSingleton.getInstance().buscar("ovo",new String[]{"idOvo"}, "","");
-        while (c.moveToNext()){
-            idOvo++;
-        }
-
-        Log.d("SORTEIO","C: " + tamComum + " I: "+ tamIncomum + " R: "+ tamRaro + " L: " + tamLendario);
+        Log.d("SORTEIO_OVO","C: " + tamComum + " I: "+ tamIncomum + " R: "+ tamRaro + " L: " + tamLendario);
 
         int min = 0;
         int max;
@@ -536,7 +527,7 @@ public final class ControladoraFachadaSingleton {
         int numIntSorteado2 = RandomUtil.randomIntInRange(1,101);
         int somaMinSegAtual = (Integer.parseInt(tempo.get("minuto")) + Integer.parseInt(tempo.get("segundo")));
 
-        Log.d("SORTEIO","NumInt: " + numIntSorteado + " NumInt2: " + numIntSorteado2 + " SomaMinSeg: " + somaMinSegAtual);
+        Log.d("SORTEIO_OVO","NumInt: " + numIntSorteado + " NumInt2: " + numIntSorteado2 + " SomaMinSeg: " + somaMinSegAtual);
 
         //sorteia OVO LENDÁRIO
         if(numIntSorteado % 2 == 0 && numIntSorteado2 % 2 == 0 && somaMinSegAtual % 2 != 0){
@@ -544,39 +535,39 @@ public final class ControladoraFachadaSingleton {
             int sorteio = RandomUtil.randomIntInRange(min,max);
             int idP = pokemons.get("L").get(sorteio).getNumero();
 
-            cadastraOvo(idOvo, idP, "L", 0);   //colocar idOvo auto incremento?
+            cadastraOvo(idP, "L", 0, 0, 0, 0);
 
-            Log.d("SORTEIO","LENDÁRIO: " + pokemons.get("L").get(sorteio).getNome());
+            Log.d("SORTEIO_OVO","LENDÁRIO: " + pokemons.get("L").get(sorteio).getNome());
 
-        //sorteia OVO RARO
+            //sorteia OVO RARO
         } else if(numIntSorteado % 2 != 0 && numIntSorteado2 % 2 != 0){
             max = tamRaro;
             int sorteio = RandomUtil.randomIntInRange(min,max);
             int idP = pokemons.get("R").get(sorteio).getNumero();
 
-            cadastraOvo(idOvo, idP, "R", 0);   //colocar idOvo auto incremento?
+            cadastraOvo(idP, "R", 0, 0, 0, 0);
 
-            Log.d("SORTEIO","LENDÁRIO: " + pokemons.get("R").get(sorteio).getNome());
+            Log.d("SORTEIO_OVO","RARO: " + pokemons.get("R").get(sorteio).getNome());
 
-        //sorteia OVO INCOMUM
+            //sorteia OVO INCOMUM
         } else if(numIntSorteado <= 35){
             max = tamIncomum;
             int sorteio = RandomUtil.randomIntInRange(min,max);
             int idP = pokemons.get("I").get(sorteio).getNumero();
 
-            cadastraOvo(idOvo, idP, "I", 0);   //colocar idOvo auto incremento?
+            cadastraOvo(idP, "I", 0, 0, 0, 0);
 
-            Log.d("SORTEIO","LENDÁRIO: " + pokemons.get("I").get(sorteio).getNome());
+            Log.d("SORTEIO_OVO","INCOMUM: " + pokemons.get("I").get(sorteio).getNome());
 
-         //Sorteia OVO COMUM
+            //Sorteia OVO COMUM
         } else {
             max = tamComum;
             int sorteio = RandomUtil.randomIntInRange(min,max);
             int idP = pokemons.get("C").get(sorteio).getNumero();
 
-            //cadastraOvo(idOvo, idP, "C", 0);   //colocar idOvo auto incremento?
+            cadastraOvo(idP, "C", 0, 0, 0, 0);
 
-            Log.d("SORTEIO","LENDÁRIO: " + pokemons.get("C").get(sorteio).getNome());
+            Log.d("SORTEIO_OVO","COMUM: " + pokemons.get("C").get(sorteio).getNome());
         }
     }
 
@@ -685,9 +676,9 @@ public final class ControladoraFachadaSingleton {
     public boolean loginUser(String login, String senha){
 
         Cursor c = BancoDadosSingleton.getInstance().buscar("usuario",
-                                                                new String[]{"login","senha","temSessao"},
-                                                                "login = '"+login+"' AND senha = '"+senha+"'",
-                                                                "");
+                new String[]{"login","senha","temSessao"},
+                "login = '"+login+"' AND senha = '"+senha+"'",
+                "");
 
         //significa que o usuário que está logando é o mesmo que fez login anteriormente
         if(c.getCount() == 1){
@@ -744,18 +735,22 @@ public final class ControladoraFachadaSingleton {
         return true;
     }
 
-    public void cadastraOvo(int idOvo, int idPokemon, String idTipoOvo, int incubado){
+    public void cadastraOvo(int idPokemon, String idTipoOvo, int incubado, int chocado, int exibido, int KmAndado){
+        if(this.ovos.size() < 9){
 
-        ContentValues valores = new ContentValues();
-        valores.put("idOvo",idOvo);
-        valores.put("idPokemon",idPokemon);
-        valores.put("idTipoOvo",idTipoOvo);
-        valores.put("incubado",incubado);
+            ContentValues valores = new ContentValues();
+            valores.put("idPokemon", idPokemon);
+            valores.put("idTipoOvo", idTipoOvo);
+            valores.put("incubado", incubado);
+            valores.put("chocado", chocado);
+            valores.put("exibido", exibido);
+            valores.put("KmAndado", KmAndado);
 
-        BancoDadosSingleton.getInstance().inserir("ovo",valores);
+            BancoDadosSingleton.getInstance().inserir("ovo", valores);
 
-        //daoOvos()    CHAMA OU NAO?
-
+            //adiciona na lista de ovos
+            daoOvo();
+        }
     }
 
     public boolean temSessao(){

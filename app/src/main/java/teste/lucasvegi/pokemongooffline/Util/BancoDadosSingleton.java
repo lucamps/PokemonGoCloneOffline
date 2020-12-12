@@ -3,6 +3,7 @@ package teste.lucasvegi.pokemongooffline.Util;
 /**
  * Created by Lucas on 12/12/2016.
  */
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,7 +12,6 @@ import android.util.Log;
 
 import java.lang.reflect.Field;
 
-import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
 import teste.lucasvegi.pokemongooffline.R;
 
 public final class BancoDadosSingleton {
@@ -556,24 +556,16 @@ public final class BancoDadosSingleton {
                     "('R', "+R.drawable.ovo_azul+", "+R.drawable.incubadora_azul+",7,'Azul')," +
                     "('L', "+R.drawable.ovo_vermelho+", "+R.drawable.incubadora_vermelha+",10,'Vermelho');",
             "CREATE TABLE ovo (" +
-                    "  idOvo INTEGER NOT NULL," +
+                    "  idOvo INTEGER PRIMARY KEY AUTOINCREMENT ," +
                     "  idPokemon INTEGER NOT NULL," +
                     "  idTipoOvo TEXT NOT NULL," +
                     "  incubado INTEGER NOT NULL," +
                     "  chocado INTEGER NOT NULL," +
                     "  exibido INTEGER NOT NULL," +
                     "  KmAndado DOUBLE NOT NULL," +
-                    "  PRIMARY KEY  (idOvo,idPokemon,idTipoOvo)," +
                     "  CONSTRAINT fk_usuariopokemon_pokemon FOREIGN KEY (idPokemon) REFERENCES pokemon (idPokemon)," +
                     "  CONSTRAINT fk_tipoovo FOREIGN KEY (idTipoOvo) REFERENCES tipoovo (idTipoOvo)" +
                     ");",
-            "INSERT INTO ovo (idOvo, idPokemon, idTipoOvo, incubado, chocado, exibido,KmAndado) VALUES" +
-                    "(1, 23, 'C', 0, 0, 0, 0)," +
-                    "(2, 18, 'R', 0, 0, 0, 0)," +
-                    "(3, 50, 'C', 0, 0, 0, 0)," +
-                    "(4, 19, 'L', 0, 0, 0, 0)," +
-                    "(5, 16, 'C', 0, 0, 0, 0)," +
-                    "(6, 22, 'I', 0, 0, 0, 0);",
             "CREATE TABLE pokestop (" +
                     "  idPokestop TEXT NOT NULL," +
                     "  latitude REAL NOT NULL," +
@@ -690,7 +682,7 @@ public final class BancoDadosSingleton {
                     "('university','Universidade'),"+
                     "('veterinary_care','Veterinária'),"+
                     "('zoo','Zoológico');"
-            };
+    };
 
     private BancoDadosSingleton() {
         Context ctx = MyApp.getAppContext();
