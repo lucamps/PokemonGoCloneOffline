@@ -28,7 +28,8 @@ public class OvosActivity extends Activity implements AdapterView.OnItemClickLis
     private List<Ovo> ovos;
     private MediaPlayer mediaPlayer;
     private Toast toastChocado;
-    private List<Ovo> ovosChocados = new ArrayList<Ovo>();;
+    private List<Ovo> ovosChocados = new ArrayList<Ovo>();
+    private Location localizacaoAtual = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,37 +42,35 @@ public class OvosActivity extends Activity implements AdapterView.OnItemClickLis
             ListView listView = (ListView) findViewById(R.id.listaOvos);
 
             Intent it = getIntent();
-            Location localizacaoAtual = it.getParcelableExtra("location");
+            localizacaoAtual = it.getParcelableExtra("location");
 
             for (int i = 0; i < ovos.size(); i++) {
-                if (ovos.get(i).getLocalizacao() == null) {
+                if (ovos.get(i).getLocalizacao() == null && ovos.get(i).getIncubado() == 1) {
                     ovos.get(i).setLocalizacao(localizacaoAtual);
+                }
 
-                } else {
+                if (ovos.get(i).getIncubado() == 1) {
 
-                    if (ovos.get(i).getIncubado() == 1) {
+                    double distancia = localizacaoAtual.distanceTo(ovos.get(i).getLocalizacao()) / 1000;
+                    Log.i("OVOS", "Distância: " + distancia);
+                    ovos.get(i).setKmAndado(ovos.get(i).getKmAndado() + distancia);
+                    ovos.get(i).setLocalizacao(localizacaoAtual);
+                    ControladoraFachadaSingleton.getInstance().setKmAndado(ovos.get(i).getIdOvo(), ovos.get(i).getKmAndado());
 
-                        double distancia = localizacaoAtual.distanceTo(ovos.get(i).getLocalizacao()) / 1000;
-                        Log.i("OVOS", "Distância: " + distancia);
-                        ovos.get(i).setKmAndado(ovos.get(i).getKmAndado() + distancia);
-                        ovos.get(i).setLocalizacao(localizacaoAtual);
-                        ControladoraFachadaSingleton.getInstance().setKmAndado(ovos.get(i).getIdOvo(), ovos.get(i).getKmAndado());
+                    //testa se ovo chocou
+                    if (ovos.get(i).getKmAndado() >= ovos.get(i).getKm()) {
+                        ovos.get(i).setChocado(1);
+                        ControladoraFachadaSingleton.getInstance().setChocado(ovos.get(i).getIdOvo(), 1);
 
-                        //testa se ovo chocou
-                        if (ovos.get(i).getKmAndado() >= ovos.get(i).getKm()) {
-                            ovos.get(i).setChocado(1);
-                            ControladoraFachadaSingleton.getInstance().setChocado(ovos.get(i).getIdOvo(), 1);
+                        ControladoraFachadaSingleton.getInstance().getUsuario().Chocar(ovos.get(i).getLocalizacao(),ovos.get(i).getIdOvo());
+                        //ovo já foi exibido
+                        ControladoraFachadaSingleton.getInstance().setExibido(ovos.get(i).getIdOvo(), 1);
 
-                            ControladoraFachadaSingleton.getInstance().getUsuario().Chocar(ovos.get(i).getLocalizacao(),ovos.get(i).getIdOvo());
-                            //ovo já foi exibido
-                            ControladoraFachadaSingleton.getInstance().setExibido(ovos.get(i).getIdOvo(), 1);
+                        //remove ovo da lista de ovos
+                        Ovo o = ovos.get(i);
+                        ovosChocados.add(new Ovo(o.getIdOvo(), o.getidPokemon(), o.getIdTipoOvo(),o.getIncubado(),o.getChocado(),o.getExibido(),o.getKmAndado()));
+                        ovos.remove(o);
 
-                            //remove ovo da lista de ovos
-                            Ovo o = ovos.get(i);
-                            ovosChocados.add(new Ovo(o.getIdOvo(), o.getidPokemon(), o.getIdTipoOvo(),o.getIncubado(),o.getChocado(),o.getExibido(),o.getKmAndado()));
-                            ovos.remove(o);
-
-                        }
                     }
                 }
             }
@@ -105,6 +104,11 @@ public class OvosActivity extends Activity implements AdapterView.OnItemClickLis
 
 
     public void clickVoltar(View v){
+        for (int i = 0; i < ovos.size(); i++) {
+            if (ovos.get(i).getLocalizacao() == null && ovos.get(i).getIncubado() == 1) {
+                ovos.get(i).setLocalizacao(localizacaoAtual);
+            }
+        }
         finish();
     }
 
