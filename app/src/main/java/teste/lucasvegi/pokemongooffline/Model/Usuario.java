@@ -2,14 +2,18 @@ package teste.lucasvegi.pokemongooffline.Model;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import teste.lucasvegi.pokemongooffline.Util.BancoDadosSingleton;
+import teste.lucasvegi.pokemongooffline.Util.MyApp;
 import teste.lucasvegi.pokemongooffline.Util.TimeUtil;
 
 /**
@@ -23,6 +27,8 @@ public class Usuario {
     private String foto;
     private String dtCadastro;
     private Map<Pokemon,List<PokemonCapturado>> pokemons;
+    private int nivel;
+    private int xp;
 
     public Usuario(){
 
@@ -87,6 +93,22 @@ public class Usuario {
         return pokemons;
     }
 
+    public int getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(int nivel) {
+        this.nivel = nivel;
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
+    }
+
     private void preencherCapturas(){
         //TODO: verificar se é necessário sincronizar com o server antes dessa operação. Nova operação da controladora será necessária para isso!
 
@@ -95,7 +117,7 @@ public class Usuario {
 
             //Select p.idPokemon idPokemon, pu.latitude latitude, pu.longitude longitude, pu.dtCaptura dtCaptura from pokemon p, usuario u, pokemonusuario pu where p.idPokemon = pu.idPokemon and u.login = pu.login and u.login = login
             Cursor cPkmn = BancoDadosSingleton.getInstance().buscar("pokemon p, usuario u, pokemonusuario pu",
-                    new String[]{"p.idPokemon idPokemon", "pu.latitude latitude", "pu.longitude longitude", "pu.dtCaptura dtCaptura"},
+                    new String[]{"p.idPokemon idPokemon", "pu.latitude latitude", "pu.longitude longitude", "pu.dtCaptura dtCaptura", "pu.estaBloqueado estaBloqueado"},
                     "p.idPokemon = pu.idPokemon and u.login = pu.login and u.login = '" + this.login + "'",
                     "p.idPokemon asc");
 
@@ -108,6 +130,7 @@ public class Usuario {
                 int lat = cPkmn.getColumnIndex("latitude");
                 int longi = cPkmn.getColumnIndex("longitude");
                 int dtCaptura = cPkmn.getColumnIndex("dtCaptura");
+                int estaBloqueado = cPkmn.getColumnIndex("estaBloqueado");
 
                 //procura o pokemon retornado do banco na lista de pokemons da controladora geral
                 for (Pokemon pokemon : listPkmn) {
@@ -118,6 +141,7 @@ public class Usuario {
                         pc.setLatitude(cPkmn.getDouble(lat));
                         pc.setLongitude(cPkmn.getDouble(longi));
                         pc.setDtCaptura(cPkmn.getString(dtCaptura));
+                        pc.setEstaBloqueado(cPkmn.getInt(estaBloqueado));
 
                         //verifica se lista de algum pokemon ainda não existe
                         if(pokemons.get(pokemon) == null) {
@@ -185,7 +209,7 @@ public class Usuario {
             valores.put("dtCaptura", dtCap);
             valores.put("latitude", aparecimento.getLatitude());
             valores.put("longitude", aparecimento.getLongitude());
-            valores.put("evoluido",0);
+            valores.put("estaBloqueado",0);
 
             //Persiste captura no banco
             BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
@@ -220,11 +244,78 @@ public class Usuario {
         }
     }
 
-    public int getQuantidadeCapturas(Pokemon pkmn){
-        if(pokemons.containsKey(pkmn)){
-            return pokemons.get(pkmn).size();
+    public int getQuantidadeCapturas(Pokemon pkmn, boolean pegarTrocados){
+        if(pegarTrocados) {
+            if (pokemons.containsKey(pkmn)) {
+                return pokemons.get(pkmn).size();
+            }
+        } else {
+            if(pkmn == null) return 0;
+            int ans = 0;
+            if (pokemons.containsKey(pkmn)) {
+                for (PokemonCapturado capt: pokemons.get(pkmn)) {
+                    if (capt.getEstaBloqueado() == 0)
+                        ans++;
+                }
+                return ans;
+            }
         }
         return 0;
+    }
+
+    public int getQuantidadeCapturas(Pokemon pkmn){
+        return getQuantidadeCapturas(pkmn, true);
+    }
+
+    public void Chocar(Location location, int idOvo){
+        try {
+            Log.i("CHOCAR", "Chocando " + ControladoraFachadaSingleton.getInstance().getPokemonOvo(idOvo).getNome());
+
+
+            Pokemon pkmnAux = ControladoraFachadaSingleton.getInstance().getPokemonOvo(idOvo);
+
+            //Obtem timeStamp da captura
+            Map<String, String> ts = TimeUtil.getHoraMinutoSegundoDiaMesAno();
+            String dtCap = ts.get("dia") + "/" + ts.get("mes") + "/" + ts.get("ano") + " " + ts.get("hora") + ":" + ts.get("minuto") + ":" + ts.get("segundo");
+
+            //Prepara valores para serem persistidos no banco
+            ContentValues valores = new ContentValues();
+            valores.put("login", this.login);
+            valores.put("idPokemon", pkmnAux.getNumero());
+            valores.put("dtCaptura", dtCap);
+            valores.put("latitude", location.getLatitude());
+            valores.put("longitude", location.getLongitude());
+            valores.put("estaBloqueado",0);
+
+            //Persiste captura no banco
+            BancoDadosSingleton.getInstance().inserir("pokemonusuario", valores);
+
+            //Adiciona 3 doces ao pokemon capturado
+            somarDoces(pkmnAux,3);
+
+            //cria objeto PokemonCapturado com informações vindas do objeto Aparecimento parâmetro
+            PokemonCapturado pc = new PokemonCapturado();
+            pc.setLatitude(location.getLatitude());
+            pc.setLongitude(location.getLongitude());
+            pc.setDtCaptura(dtCap);
+
+            //verifica se lista de algum pokemon ainda não existe
+            if (pokemons.get(pkmnAux) == null) {
+                pokemons.put(pkmnAux, new ArrayList<PokemonCapturado>());
+                Log.d("CAPTURA", "Pokemon novo");
+            } else {
+                Log.d("CAPTURA", "Pokemon conhecido");
+            }
+
+            //adiciona o pokemon na lista da sua especie
+            pokemons.get(pkmnAux).add(pc);
+
+            ControladoraFachadaSingleton.getInstance().aumentaXp("choca");   //atualiza XP do usuário ao chocar um ovo
+
+        }catch (Exception e){
+            Log.e("CHOCAR", "ERRO: " + e.getMessage());
+        }
+
     }
 
 }

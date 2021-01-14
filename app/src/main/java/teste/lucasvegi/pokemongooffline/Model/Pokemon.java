@@ -2,7 +2,6 @@ package teste.lucasvegi.pokemongooffline.Model;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -154,14 +153,14 @@ public class Pokemon implements Serializable{
         return evolucao;
     }
 
-    public boolean estaDisponivel(boolean atualizarFlagEvoluido){
+    public boolean estaDisponivel(boolean atualizarFlagBloqueado){
         // SELECT pu.login login, pu.idPokemon idPokemon, pu.latitude latitude,pu.longitude longitude,pu.dtCaptura dtCaptura
         // FROM pokemon p, pokemonusuario pu
-        // WHERE pu.evoluido = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = this.numero
+        // WHERE pu.estaBloqueado = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = this.numero
         Cursor c = BancoDadosSingleton.getInstance().buscar("pokemon p, pokemonusuario pu",
                 new String[]{"pu.login login", "pu.idPokemon idPokemon", "pu.latitude latitude",
                         "pu.longitude longitude","pu.dtCaptura dtCaptura" },
-                "pu.evoluido = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = " + this.numero, "");
+                "pu.estaBloqueado = 0 AND p.idPokemon = pu.idPokemon AND pu.idPokemon = " + this.numero, "");
 
         //Se a busca não encontrar nada, retorna false
         if(!c.moveToNext()){
@@ -169,8 +168,8 @@ public class Pokemon implements Serializable{
             return false;
         }
 
-        // Atualizando a flag evoluido para true
-        if(atualizarFlagEvoluido) {
+        // Atualizando a flag estaBloqueado para true
+        if(atualizarFlagBloqueado) {
             int login = c.getColumnIndex("login");
             int idPokemon = c.getColumnIndex("idPokemon");
             int latitude = c.getColumnIndex("latitude");
@@ -184,7 +183,7 @@ public class Pokemon implements Serializable{
             valores.put("latitude", c.getDouble(latitude));
             valores.put("longitude", c.getDouble(longitude));
             valores.put("dtCaptura", c.getString(dtCaptura));
-            valores.put("evoluido", 1);
+            valores.put("estaBloqueado", 1);
 
             //Atualiza o banco
             BancoDadosSingleton.getInstance().atualizar("pokemonusuario",valores,"login = '" + c.getString(login) +

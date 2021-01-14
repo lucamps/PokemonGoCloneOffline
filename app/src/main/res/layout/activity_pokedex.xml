@@ -51,6 +51,7 @@
             android:id="@+id/txtPokedexTotal"
             android:layout_below="@+id/voltarPokedex"
             android:layout_alignParentRight="true" />
+
     </RelativeLayout>
 
     <ListView
@@ -58,4 +59,5 @@
         android:layout_height="wrap_content"
         android:id="@+id/listaPokedex"
         android:layout_below="@+id/barraVoltarPokedex"/>
+
 </RelativeLayout>

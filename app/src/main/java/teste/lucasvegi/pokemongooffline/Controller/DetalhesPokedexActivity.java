@@ -1,5 +1,6 @@
 package teste.lucasvegi.pokemongooffline.Controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.ContentValues;
@@ -14,7 +15,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.session.MediaSessionManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.wallet.NotifyTransactionStatusRequest;
 
 import teste.lucasvegi.pokemongooffline.Model.Aparecimento;
 import teste.lucasvegi.pokemongooffline.Model.ControladoraFachadaSingleton;
@@ -135,6 +134,7 @@ public class DetalhesPokedexActivity extends Activity implements LocationListene
         configuraCriterioLocation();
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onStart() {
         super.onStart();
@@ -208,13 +208,22 @@ public class DetalhesPokedexActivity extends Activity implements LocationListene
         }
 
         // Evoluindo pokemon caso exista pokemon disponível
-        else if (pkmn.estaDisponivel(true)){ // Se isso ocorre, já atualizamos o atributo 'evoluido' da tabela pokemonusuario no Banco
+        else if (pkmn.estaDisponivel(true)){ // Se isso ocorre, já atualizamos a flag 'estaBloqueado' da tabela pokemonusuario no Banco
             evoluir();
+            ControladoraFachadaSingleton.getInstance().aumentaXp("evolui");   //atualiza XP do usuário após evoluir um Pokemon
+            PokemonCapturado paraEditar = null;
+            for (PokemonCapturado capt: ControladoraFachadaSingleton.getInstance().getUsuario().getPokemons().get(pkmn) ) {
+                if(capt.getEstaBloqueado() == 0) {
+                    capt.setEstaBloqueado(1);
+                    paraEditar = capt;
+                    break;
+                }
+            }
         }
 
         // Se não há pokemon disponível, informamos issso via Toast
         else{
-            Toast.makeText(getBaseContext(),"Todos os Pokemons de nome " + pkmn.getNome() + " já estão evoluidos!",Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(),"Não há Pokemons de nome " + pkmn.getNome() + " disponíveis para evolução!",Toast.LENGTH_LONG).show();
         }
     }
 
